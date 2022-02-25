@@ -1,7 +1,7 @@
-import Insight, { InsightFailed } from '@/lib/Insight'
+import { ethers } from 'ethers'
+import Insight from '@/lib/Insight'
 import Augmenter from '@/lib/Augmenter'
 import { TxData } from '@/types/covalent'
-import { ethers } from 'ethers'
 
 const provider = new ethers.providers.InfuraProvider('homestead', process.env.INFURA_ID)
 
@@ -17,6 +17,7 @@ class ENSNames extends Insight {
 
 	protected async getENSFor(address: string): Promise<string | null> {
 		if (!address) return null
+		if (this.#ensCache[address]) return this.#ensCache[address]
 
 		const ens = await provider.lookupAddress(address)
 		this.#ensCache[address] = ens
@@ -25,6 +26,6 @@ class ENSNames extends Insight {
 	}
 }
 
-//export const registerInsight = (augmenter: typeof Augmenter) => augmenter.register(new ENSNames())
+export const registerInsight = (augmenter: typeof Augmenter) => augmenter.register(new ENSNames())
 
 export default ENSNames

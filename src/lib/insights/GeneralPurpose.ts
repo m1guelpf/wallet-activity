@@ -1,7 +1,9 @@
+import axios from 'axios'
+import { ethers } from 'ethers'
 import Insight from '@/lib/Insight'
 import Augmenter from '@/lib/Augmenter'
 import { TxData } from '@/types/covalent'
-import { ethers } from 'ethers'
+import type { TransactionResponse } from '@ethersproject/abstract-provider'
 
 const provider = new ethers.providers.InfuraProvider('homestead', process.env.INFURA_ID)
 
@@ -13,22 +15,33 @@ enum CONTRACT_PURPOSE {
 
 class GeneralPurpose extends Insight {
 	name = 'General Purpose'
+	#fnSigCache: Record<string, string> = {}
 
-	public async apply(tx: TxData): Promise<{ generalPurpose: string }> {
-		const purpose = await this.getPurpose(tx)
-
-		return { generalPurpose: purpose.toString() }
-	}
-
-	protected async getPurpose(tx: TxData): Promise<CONTRACT_PURPOSE> {
-		if (!tx.to_address) return CONTRACT_PURPOSE.CONTRACT_DEPLOY
+	public async apply(tx: TxData): Promise<{ generalPurpose: string; method?: string }> {
+		if (!tx.to_address) return { generalPurpose: CONTRACT_PURPOSE.CONTRACT_DEPLOY }
 
 		const txData = await provider.getTransaction(tx.tx_hash)
+		if (txData.data == '0x') return { generalPurpose: CONTRACT_PURPOSE.ETH_TRANSFER }
 
-		// Another option here would be to `getCode(tx.to_address)`, since you _could_ send ETH + a message to someone.
-		if (txData.data == '0x') return CONTRACT_PURPOSE.ETH_TRANSFER
+		return {
+			method: await this.getMethod(txData),
+			generalPurpose: CONTRACT_PURPOSE.CONTRACT_INTERACTION,
+		}
+	}
 
-		return CONTRACT_PURPOSE.CONTRACT_INTERACTION
+	protected async getMethod(txData: TransactionResponse): Promise<string | null> {
+		const fnSig = txData.data.slice(0, 10)
+		if (this.#fnSigCache[fnSig]) return this.#fnSigCache[fnSig]
+
+		const method = await axios
+			.get('https://www.4byte.directory/api/v1/signatures', {
+				params: { hex_signature: txData.data.slice(0, 10) },
+			})
+			.then(({ data: { results } }) => results[results.length - 1]?.text_signature?.split('(')?.[0])
+
+		this.#fnSigCache[fnSig] = method
+
+		return method
 	}
 }
 

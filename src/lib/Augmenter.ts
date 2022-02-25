@@ -1,5 +1,5 @@
-import { TxData } from '@/types/covalent'
 import Insight from './Insight'
+import { TxData } from '@/types/covalent'
 
 type Module = {
 	registerInsight?: (Augmenter) => void
@@ -13,16 +13,10 @@ class Augmenter {
 	constructor() {
 		const insights = require.context('./insights', true)
 
-		this.insightsPromise = Promise.all(
-			insights
-				.keys()
-				.filter(key => key.endsWith('.ts')) // Prevent insight duplication (due to TS)
-				.map(async key => await insights<Module>(key)?.registerInsight?.(this))
-		)
-	}
-
-	public async ready(): Promise<void> {
-		await this.insightsPromise
+		insights
+			.keys()
+			.filter(key => key.endsWith('.ts')) // Prevent insight duplication (due to TS)
+			.map(key => insights<Module>(key)?.registerInsight?.(this))
 	}
 
 	public async augment(tx: TxData): Promise<Record<string, unknown>> {
@@ -31,12 +25,16 @@ class Augmenter {
 		/* @TODO: Remove before going to production. */
 		insights.forEach(result => result.status == 'rejected' && console.log(result.reason))
 
-		return Object.fromEntries(
-			insights
-				.filter(result => result.status === 'fulfilled')
-				.map((result: PromiseFulfilledResult<Record<string, unknown>>) => Object.entries(result.value))
-				.flat()
-		)
+		return insights
+			.filter(result => result.status === 'fulfilled')
+			.map((result: PromiseFulfilledResult<Record<string, unknown>>) => result.value)
+			.reduce((A, B) => {
+				let res = {}
+
+				Object.keys({ ...A, ...B }).map(key => (res[key] = B[key] || A[key]))
+
+				return res
+			})
 	}
 
 	public register(module: Insight): void {

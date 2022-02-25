@@ -1,7 +1,7 @@
-import Insight, { InsightFailed } from '@/lib/Insight'
+import Insight from '@/lib/Insight'
 import Augmenter from '@/lib/Augmenter'
 import { TxData } from '@/types/covalent'
-import axios from 'axios'
+import { PrismaClient } from '@prisma/client'
 
 type NameMapping = {
 	name: string
@@ -10,36 +10,27 @@ type NameMapping = {
 
 class ContractName extends Insight {
 	name = 'Contract Name'
+	#client: PrismaClient
 
-	#lookup: NameMapping[]
-
-	constructor(lookup: NameMapping[]) {
+	constructor() {
 		super()
 
-		this.#lookup = lookup
-	}
-
-	public static async init(): Promise<ContractName> {
-		const db = await axios
-			.get(
-				'https://raw.githubusercontent.com/tintinweb/smart-contract-sanctuary-ethereum/eb6b57e33f0a157c3688024a1eead4ea85753bd1/contracts/mainnet/contracts.json'
-			)
-			.then(res => JSON.parse(`[${res.data.replaceAll('}', '},').slice(0, -2)}]`) as NameMapping[])
-
-		return new this(db)
+		this.#client = new PrismaClient()
 	}
 
 	public async apply(tx: TxData): Promise<{ contractName: string | null }> {
-		const contractName = this.getNameFor(tx.to_address)
+		const contractName = await this.getNameFor(tx.to_address)
 
 		return { contractName }
 	}
 
-	protected getNameFor(contract: string): string | null {
-		return this.#lookup.find(entry => entry.address.toLowerCase() == contract?.toLowerCase())?.name
+	protected getNameFor(contract: string): Promise<string | null> {
+		if (!contract) return
+
+		return this.#client.contract.findUnique({ where: { id: contract } }).then(res => res?.name)
 	}
 }
 
-export const registerInsight = async (augmenter: typeof Augmenter) => augmenter.register(await ContractName.init())
+export const registerInsight = (augmenter: typeof Augmenter) => augmenter.register(new ContractName())
 
 export default ContractName
