@@ -1,4 +1,9 @@
 import { TxData } from '@/types/covalent'
+import { ChainId } from '@/types/utils'
+
+export type Config = {
+	chainId: ChainId
+}
 
 export class InsightFailed extends Error {
 	public insight: Insight
@@ -14,7 +19,7 @@ export class InsightFailed extends Error {
 abstract class Insight {
 	name: string
 
-	abstract apply(tx: TxData): Promise<Record<string, unknown>>
+	abstract apply(tx: TxData, config: Config): Promise<Record<string, unknown>>
 }
 
 export default Insight

@@ -1,11 +1,9 @@
 import axios from 'axios'
 import { ethers } from 'ethers'
-import Insight from '@/lib/Insight'
+import Insight, { Config } from '@/lib/Insight'
 import Augmenter from '@/lib/Augmenter'
 import { TxData } from '@/types/covalent'
 import type { TransactionResponse } from '@ethersproject/abstract-provider'
-
-const provider = new ethers.providers.InfuraProvider('homestead', process.env.INFURA_ID)
 
 enum CONTRACT_PURPOSE {
 	ETH_TRANSFER = 'eth_transfer',
@@ -17,7 +15,9 @@ class GeneralPurpose extends Insight {
 	name = 'General Purpose'
 	#fnSigCache: Record<string, string> = {}
 
-	public async apply(tx: TxData): Promise<{ generalPurpose: string; method?: string }> {
+	public async apply(tx: TxData, config: Config): Promise<{ generalPurpose: string; method?: string }> {
+		const provider = new ethers.providers.InfuraProvider(config.chainId, process.env.INFURA_ID)
+
 		if (!tx.to_address) return { generalPurpose: CONTRACT_PURPOSE.CONTRACT_DEPLOY }
 
 		const txData = await provider.getTransaction(tx.tx_hash)

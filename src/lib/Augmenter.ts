@@ -1,5 +1,5 @@
-import Insight from './Insight'
 import { TxData } from '@/types/covalent'
+import Insight, { Config } from './Insight'
 
 type Module = {
 	registerInsight?: (Augmenter) => void
@@ -19,8 +19,8 @@ class Augmenter {
 			.map(key => insights<Module>(key)?.registerInsight?.(this))
 	}
 
-	public async augment(tx: TxData): Promise<Record<string, unknown>> {
-		const insights = await Promise.allSettled(this.#insights.map(insight => insight.apply(tx)))
+	public async augment(tx: TxData, config: Config): Promise<Record<string, unknown>> {
+		const insights = await Promise.allSettled(this.#insights.map(insight => insight.apply(tx, config)))
 
 		/* @TODO: Remove before going to production. */
 		insights.forEach(result => result.status == 'rejected' && console.log(result.reason))

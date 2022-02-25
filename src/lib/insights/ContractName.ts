@@ -1,12 +1,7 @@
-import Insight from '@/lib/Insight'
 import Augmenter from '@/lib/Augmenter'
 import { TxData } from '@/types/covalent'
 import { PrismaClient } from '@prisma/client'
-
-type NameMapping = {
-	name: string
-	address: string
-}
+import Insight, { Config } from '@/lib/Insight'
 
 class ContractName extends Insight {
 	name = 'Contract Name'
@@ -18,16 +13,16 @@ class ContractName extends Insight {
 		this.#client = new PrismaClient()
 	}
 
-	public async apply(tx: TxData): Promise<{ contractName: string | null }> {
-		const contractName = await this.getNameFor(tx.to_address)
+	public async apply(tx: TxData, config: Config): Promise<{ contractName: string | null }> {
+		const contractName = await this.getNameFor(tx.to_address, config.chainId)
 
 		return { contractName }
 	}
 
-	protected getNameFor(contract: string): Promise<string | null> {
-		if (!contract) return
+	protected getNameFor(address: string, chainId: number): Promise<string | null> {
+		if (!address) return
 
-		return this.#client.contract.findUnique({ where: { id: contract } }).then(res => res?.name)
+		return this.#client.contract.findUnique({ where: { fqAddr: { address, chainId } } }).then(res => res?.name)
 	}
 }
 

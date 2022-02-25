@@ -9,6 +9,10 @@ generator client {
 }
 
 model Contract {
-    id   String @id @db.VarChar(42)
-    name String @db.VarChar(255)
+    id      Int    @id @default(autoincrement())
+    address String @db.VarChar(42)
+    chainId Int    @db.Int()
+    name    String @db.VarChar(255)
+
+    @@unique([address, chainId], name: "fqAddr")
 }
