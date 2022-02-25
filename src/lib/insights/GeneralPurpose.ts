@@ -5,7 +5,7 @@ import Augmenter from '@/lib/Augmenter'
 import { TxData } from '@/types/covalent'
 import type { TransactionResponse } from '@ethersproject/abstract-provider'
 
-enum CONTRACT_PURPOSE {
+export enum CONTRACT_PURPOSE {
 	ETH_TRANSFER = 'eth_transfer',
 	CONTRACT_DEPLOY = 'contract_deploy',
 	CONTRACT_INTERACTION = 'contract_interaction',

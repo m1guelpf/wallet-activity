@@ -27,3 +27,37 @@ const networks: Record<Network, ChainId> = {
 export const getChainId = (network: Network): ChainId => {
 	return networks[network]
 }
+
+export const getDayOfWeek = (date: Date): string => {
+	return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][date.getDay()]
+}
+
+export const getMonthOfYear = (date: Date): string => {
+	return [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December',
+	][date.getMonth()]
+}
+
+export const formatAddressShort = (address: string): string | null => {
+	if (!address) return null
+
+	// Skip over ENS names
+	if (address.includes('.')) return address
+
+	return `${address.slice(0, 4)}…${address.slice(address.length - 4, address.length)}`
+}
+
+export const addressEquals = (address1: string, address2: string): boolean => {
+	return address1?.toLowerCase() === address2?.toLowerCase()
+}
