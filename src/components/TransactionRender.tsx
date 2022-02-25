@@ -11,6 +11,8 @@ import { CONTRACT_PURPOSE } from '@/lib/insights/GeneralPurpose'
 const TransactionRender: FC<{ entry: ActivityEntry }> = ({ entry }) => {
 	const { userAddress } = useWeb3()
 
+	console.log(entry)
+
 	return (
 		<a
 			href={entry.explorer_url}
@@ -35,15 +37,17 @@ const getTitle = (entry: ActivityEntry, userAddress: string): string => {
 		case CONTRACT_PURPOSE.ETH_TRANSFER:
 			const isSend = addressEquals(entry.raw.from, userAddress)
 			return `${isSend ? 'Sent' : 'Received'} ${entry.value_in_eth} ETH ${isSend ? 'to' : 'from'} ${
-				entry.insights?.toENS || formatAddressShort(entry.raw.to)
+				isSend
+					? entry.insights?.toENS || formatAddressShort(entry.raw.to)
+					: entry.insights?.fromENS || formatAddressShort(entry.raw.from)
 			}`
 		case CONTRACT_PURPOSE.CONTRACT_INTERACTION:
 			if (addressEquals(entry.raw.from, userAddress)) {
 				if (
-					entry.insights.interactions.find(
+					entry.insights.interactions?.find(
 						(contract: Interaction) => contract.contract === 'Project Wyvern Exchange'
 					) &&
-					entry.insights.interactions.length > 1
+					entry.insights?.interactions?.length > 1
 				) {
 					return `Bought an NFT on OpenSea`
 				}
@@ -90,10 +94,10 @@ const getDescription = (entry: ActivityEntry, userAddress: string): string => {
 		case CONTRACT_PURPOSE.CONTRACT_INTERACTION:
 			if (addressEquals(entry.raw.from, userAddress)) {
 				if (
-					entry.insights.interactions.find(
+					entry.insights.interactions?.find(
 						(contract: Interaction) => contract.contract === 'Project Wyvern Exchange'
 					) &&
-					entry.insights.interactions.length > 1
+					entry.insights.interactions?.length > 1
 				) {
 					return `Bought a ${entry.insights.interactions[1].contract} NFT for ${entry.value_in_eth} ETH`
 				}

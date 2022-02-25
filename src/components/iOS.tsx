@@ -9,6 +9,7 @@ import { getDayOfWeek, getMonthOfYear } from '@/lib/utils'
 import useElementVisibility from '@/hooks/useElementVisibility'
 import PersonViewFinderIcon from './icons/PersonViewFinderIcon'
 import { SwitchTransition, CSSTransition } from 'react-transition-group'
+import useWeb3 from '@/hooks/useWeb3'
 
 const iOS = {
 	Screen: ({ children }) => {
@@ -79,11 +80,12 @@ const iOS = {
 		<div className="absolute hidden md:block top-0 left-1/2 h-9 w-52 md:w-72 bg-gray-900 rounded-b-3xl transform -translate-x-1/2 shadow-inner" />
 	),
 	LockedTime: forwardRef(({}, ref: ForwardedRef<HTMLDivElement>) => {
+		const { userAddress } = useWeb3()
 		const time = useTime(1000) // refresh every second
 
 		return (
 			<div className="pb-4 flex flex-col items-center" ref={ref}>
-				<LockClosedIcon className="w-9 h-9 mb-5" />
+				{userAddress ? <EthereumIcon className="w-9 h-9 mb-5" /> : <LockClosedIcon className="w-9 h-9 mb-5" />}
 				<h1 className="text-center text-8xl font-extralight">
 					<span className='after:content-[":"] after:relative after:-top-2 after:text-white after:mx-0.5'>
 						{('0' + time.getHours()).slice(-2)}

@@ -14,7 +14,7 @@ class ContractName extends Insight {
 	}
 
 	public async apply(tx: TxData, config: Config): Promise<{ contractName: string | null }> {
-		const contractName = await this.getNameFor(tx.to_address, config.chainId)
+		const contractName = await this.getNameFor(tx.to_address.toLowerCase(), config.chainId)
 
 		return { contractName }
 	}
