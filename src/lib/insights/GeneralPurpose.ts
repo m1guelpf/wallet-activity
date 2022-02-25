@@ -4,6 +4,7 @@ import Insight, { Config } from '@/lib/Insight'
 import Augmenter from '@/lib/Augmenter'
 import { TxData } from '@/types/covalent'
 import type { TransactionResponse } from '@ethersproject/abstract-provider'
+import { getNetworkName } from '../utils'
 
 export enum CONTRACT_PURPOSE {
 	ETH_TRANSFER = 'eth_transfer',
@@ -16,7 +17,7 @@ class GeneralPurpose extends Insight {
 	#fnSigCache: Record<string, string> = {}
 
 	public async apply(tx: TxData, config: Config): Promise<{ generalPurpose: string; method?: string }> {
-		const provider = new ethers.providers.InfuraProvider(config.chainId, process.env.NEXT_PUBLIC_INFURA_ID)
+		const provider = new ethers.providers.CloudflareProvider(config.chainId)
 
 		if (!tx.to_address) return { generalPurpose: CONTRACT_PURPOSE.CONTRACT_DEPLOY }
 

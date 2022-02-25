@@ -12,7 +12,7 @@ type Response = ActivityData & {
 	}
 }
 
-export default handler.get(async (req: NextApiRequest, res: NextApiResponse<Response | string>) => {
+export default handler().get(async (req: NextApiRequest, res: NextApiResponse<Response | string>) => {
 	const { address, chainId, page, limit } = getConfig(req)
 
 	if (!address) return res.status(400).send('No wallet specified.')

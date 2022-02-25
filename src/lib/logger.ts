@@ -1,6 +1,14 @@
 class Logger {
 	#timers: Record<string, number> = {}
 
+	public time<T>(key: string, op: () => T): T {
+		this.startTimer(key)
+		const result = op()
+		this.endTimer(key)
+
+		return result
+	}
+
 	public startTimer(key: string): void {
 		this.#timers[key] = new Date().getTime()
 	}

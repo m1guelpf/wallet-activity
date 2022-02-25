@@ -3,7 +3,7 @@ import Augmenter from '@/lib/Augmenter'
 import { TxData } from '@/types/covalent'
 import Insight, { Config } from '@/lib/Insight'
 
-const provider = new ethers.providers.InfuraProvider('homestead', process.env.NEXT_PUBLIC_INFURA_ID)
+const provider = new ethers.providers.CloudflareProvider()
 
 class ENSNames extends Insight {
 	name = 'ENS Names'

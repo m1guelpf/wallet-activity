@@ -1,18 +1,19 @@
-import useSWR from 'swr'
 import axios from 'axios'
 import { FC } from 'react'
 import iOS from '@/components/iOS'
 import useWeb3 from '@/hooks/useWeb3'
 import Layout from '@/components/Layout'
+import useSWRImmutable from 'swr/immutable'
 import { ActivityData } from '@/lib/Activity'
 import ConnectWallet from '@/components/ConnectWallet'
 import TransactionRender from '@/components/TransactionRender'
 
 const Index: FC = () => {
 	const { userAddress } = useWeb3()
-	const { data: activity, isValidating: loading } = useSWR<ActivityData>(
+	const { data: activity, isValidating: loading } = useSWRImmutable<ActivityData>(
 		() => userAddress && `/api/activity/${userAddress}?limit=15`,
-		url => axios.get(url).then(res => res.data)
+		url => axios.get(url).then(res => res.data),
+		{}
 	)
 
 	return (
