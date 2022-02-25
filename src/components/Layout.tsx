@@ -29,6 +29,10 @@ const Layout: FC = ({ children }) => {
 				<meta property="twitter:description" content={meta.description} />
 				<meta property="twitter:image" content={meta.image} />
 				<meta property="twitter:creator" content="@m1guelpf" />
+
+				<meta name="apple-mobile-web-app-capable" content="yes" />
+				<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+				<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 			</Head>
 
 			{children}

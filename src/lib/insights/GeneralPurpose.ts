@@ -16,7 +16,7 @@ class GeneralPurpose extends Insight {
 	#fnSigCache: Record<string, string> = {}
 
 	public async apply(tx: TxData, config: Config): Promise<{ generalPurpose: string; method?: string }> {
-		const provider = new ethers.providers.InfuraProvider(config.chainId, process.env.INFURA_ID)
+		const provider = new ethers.providers.InfuraProvider(config.chainId, process.env.NEXT_PUBLIC_INFURA_ID)
 
 		if (!tx.to_address) return { generalPurpose: CONTRACT_PURPOSE.CONTRACT_DEPLOY }
 

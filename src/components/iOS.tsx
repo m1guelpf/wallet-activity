@@ -4,7 +4,7 @@ import BatteryIcon from './icons/BatteryIcon'
 import EthereumIcon from './icons/EthereumIcon'
 import LockClosedIcon from './icons/LockClosedIcon'
 import { ChartBarIcon } from '@heroicons/react/solid'
-import { ForwardedRef, forwardRef, useRef } from 'react'
+import { ForwardedRef, forwardRef, useEffect, useRef, useState } from 'react'
 import { getDayOfWeek, getMonthOfYear } from '@/lib/utils'
 import useElementVisibility from '@/hooks/useElementVisibility'
 import PersonViewFinderIcon from './icons/PersonViewFinderIcon'
@@ -13,33 +13,38 @@ import { SwitchTransition, CSSTransition } from 'react-transition-group'
 const iOS = {
 	Screen: ({ children }) => {
 		const timeRef = useRef(null)
+		const [isStandalone, setStandalone] = useState<boolean>(false)
 		const timeVisible = useElementVisibility(timeRef, { threshold: 0.3 })
+
+		useEffect(() => {
+			setStandalone(!!(window.navigator as any)?.standalone)
+		}, [])
 
 		return (
 			<div className="flex items-center justify-center h-screen w-screen md:py-4 antialiased text-white bg-gray-900 to-black">
 				<div className="md:max-w-md bg-cover bg-ios md:rounded-xl transform scale-100 h-full md:h-auto md:max-h-4xl relative overflow-auto w-full">
 					<div className="flex flex-col px-2 min-h-3xl h-full md:h-3xl">
-						<iOS.TopBar showTime={!timeVisible} />
+						<iOS.TopBar isStandalone={isStandalone} showTime={!timeVisible} />
 						<main className="pt-8 space-y-2 overflow-scroll min-h-0 flex flex-col flex-1 pb-4">
 							<iOS.LockedTime ref={timeRef} />
 							{children}
 						</main>
-						<iOS.BottomBar />
+						{!isStandalone && <iOS.BottomBar />}
 					</div>
 				</div>
 			</div>
 		)
 	},
-	TopBar: ({ showTime }) => {
+	TopBar: ({ showTime, isStandalone }) => {
 		const time = useTime(1000) // refresh every second
 
 		return (
 			<header className="sticky top-0 inset-x-0 flex flex-row items-center justify-between z-20 bg-transparent backdrop-blur-sm -mx-2 px-2 pb-2 -mb-2">
-				<div className="flex flex-row items-center ml-1.5 w-36 mt-2">
+				<div className={`flex flex-row items-center ml-1.5 w-36 mt-2`}>
 					<SwitchTransition mode="out-in">
 						<CSSTransition
 							key={showTime}
-							className="transition transform duration-300 delay-75"
+							className={`transition transform duration-300 delay-75 ${isStandalone ? 'invisible' : ''}`}
 							timeout={300}
 							classNames={{
 								enter: 'opacity-0',
@@ -62,7 +67,7 @@ const iOS = {
 					</SwitchTransition>
 				</div>
 				<iOS.Notch />
-				<div className="flex items-center justify-end space-x-1 w-36 mt-2">
+				<div className={`flex items-center justify-end space-x-1 w-36 mt-2 ${isStandalone ? 'invisible' : ''}`}>
 					<ChartBarIcon className="w-4 h-4" />
 					<WifiIcon className="w-4 h-4" />
 					<BatteryIcon className="w-auto h-3" />

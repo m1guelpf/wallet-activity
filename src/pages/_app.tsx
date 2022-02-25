@@ -1,5 +1,5 @@
+import '@/styles/styles.css'
 import { ethers } from 'ethers'
-import 'tailwindcss/tailwind.css'
 import { AppProps } from 'next/app'
 import { FC, useState } from 'react'
 import Web3Context from '@/context/Web3Context'
