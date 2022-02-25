@@ -1,14 +1,14 @@
-import { useTime } from '@/hooks/useTime'
-import { getDayOfWeek, getMonthOfYear } from '@/lib/utils'
-import { ChartBarIcon, MoonIcon } from '@heroicons/react/solid'
 import WifiIcon from './icons/WifiIcon'
+import { useTime } from '@/hooks/useTime'
 import BatteryIcon from './icons/BatteryIcon'
-import LockClosedIcon from './icons/LockClosedIcon'
-import { ForwardedRef, forwardRef, useRef } from 'react'
-import useElementVisibility from '@/hooks/useElementVisibility'
-import { SwitchTransition, CSSTransition } from 'react-transition-group'
-import PersonViewFinderIcon from './icons/PersonViewfinderIcon'
 import EthereumIcon from './icons/EthereumIcon'
+import LockClosedIcon from './icons/LockClosedIcon'
+import { ChartBarIcon } from '@heroicons/react/solid'
+import { ForwardedRef, forwardRef, useRef } from 'react'
+import { getDayOfWeek, getMonthOfYear } from '@/lib/utils'
+import useElementVisibility from '@/hooks/useElementVisibility'
+import PersonViewFinderIcon from './icons/PersonViewFinderIcon'
+import { SwitchTransition, CSSTransition } from 'react-transition-group'
 
 const iOS = {
 	Screen: ({ children }) => {
@@ -111,7 +111,6 @@ const iOS = {
 	),
 	Notification: ({ title, description, meta, metaSubtitle }) => (
 		<div className="rounded-2xl backdrop-filter backdrop-blur-3xl backdrop-saturate-150 bg-black bg-opacity-40 p-3 flex items-center space-x-3">
-			{/* eslint-disable-next-line @next/next/no-img-element */}
 			<EthereumIcon className="h-10 w-10" />
 			<div className="w-full">
 				<div className="flex items-center justify-between mb-0.5">

@@ -1,12 +1,12 @@
+import iOS from './iOS'
+import { FC } from 'react'
+import collect from 'collect.js'
 import useWeb3 from '@/hooks/useWeb3'
+import { format as timeago } from 'timeago.js'
 import { ActivityEntry } from '@/lib/Activity'
-import { CONTRACT_PURPOSE } from '@/lib/insights/GeneralPurpose'
 import { Interaction } from '@/lib/insights/InterpretEvents'
 import { addressEquals, formatAddressShort } from '@/lib/utils'
-import collect from 'collect.js'
-import { FC } from 'react'
-import { format as timeago } from 'timeago.js'
-import iOS from './iOS'
+import { CONTRACT_PURPOSE } from '@/lib/insights/GeneralPurpose'
 
 const TransactionRender: FC<{ entry: ActivityEntry }> = ({ entry }) => {
 	const { userAddress } = useWeb3()

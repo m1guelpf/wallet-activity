@@ -1,6 +1,6 @@
 import useWeb3 from '@/hooks/useWeb3'
-import { formatAddressShort } from '@/lib/utils'
 import { ButtonHTMLAttributes } from 'react'
+import { formatAddressShort } from '@/lib/utils'
 
 const ConnectWallet = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
 	const { web3, userAddress, userENS, connectWallet, disconnectWallet } = useWeb3()
