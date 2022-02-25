@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 import Web3Modal from 'web3modal'
 import Web3Context from '@/context/Web3Context'
 import WalletConnectProvider from '@walletconnect/web3-provider'
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react'
 
 const useWeb3 = (): {
 	web3: ethers.providers.Web3Provider | null
@@ -11,7 +11,12 @@ const useWeb3 = (): {
 	connectWallet: () => void
 	disconnectWallet: () => void
 } => {
-	const { web3, setWeb3, userAddress, setUserAddress } = useContext(Web3Context)
+	const { web3, setWeb3, userAddress, setUserAddress } = useContext<{
+		web3: ethers.providers.Web3Provider | null
+		setWeb3: Dispatch<SetStateAction<ethers.providers.Web3Provider | null>>
+		userAddress: string
+		setUserAddress: Dispatch<SetStateAction<string>>
+	}>(Web3Context)
 	const [userENS, setUserENS] = useState<string>(null)
 
 	const web3Modal = useMemo<Web3Modal | null>(() => {
@@ -37,7 +42,22 @@ const useWeb3 = (): {
 		web3Modal
 			.connect()
 			.then(provider => new ethers.providers.Web3Provider(provider))
-			.then(setWeb3)
+			.then(web3 => {
+				setWeb3(web3)
+
+				web3.getSigner()
+					.getAddress()
+					.then(address => {
+						setUserAddress(address)
+
+						return web3.lookupAddress(address)
+					})
+					.then(ensDomain => {
+						if (!ensDomain) return
+
+						setUserENS(ensDomain)
+					})
+			})
 
 	const disconnectWallet = () => {
 		web3Modal.clearCachedProvider()
@@ -46,24 +66,6 @@ const useWeb3 = (): {
 		setUserAddress(null)
 		setUserENS(null)
 	}
-
-	useEffect(() => {
-		if (!web3) return
-
-		web3.getSigner()
-			.getAddress()
-			.then(address => {
-				setUserAddress(address)
-
-				return web3.lookupAddress(address)
-			})
-			.then(ensDomain => {
-				if (!ensDomain) return
-
-				setUserENS(ensDomain)
-			})
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [web3])
 
 	useEffect(() => {
 		if (!web3Modal.cachedProvider) return

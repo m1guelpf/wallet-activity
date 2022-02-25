@@ -33,7 +33,7 @@ const TransactionRender: FC<{ entry: ActivityEntry }> = ({ entry }) => {
 const getTitle = (entry: ActivityEntry, userAddress: string): string => {
 	switch (entry.insights.generalPurpose as CONTRACT_PURPOSE) {
 		case CONTRACT_PURPOSE.CONTRACT_DEPLOY:
-			return 'Deployed Contract'
+			return `Deployed Contract${entry.insights.contractName ? ` ${entry.insights.contractName}` : ''}`
 		case CONTRACT_PURPOSE.ETH_TRANSFER:
 			const isSend = addressEquals(entry.raw.from, userAddress)
 			return `${isSend ? 'Sent' : 'Received'} ${entry.value_in_eth} ETH ${isSend ? 'to' : 'from'} ${
@@ -50,6 +50,10 @@ const getTitle = (entry: ActivityEntry, userAddress: string): string => {
 					entry.insights?.interactions?.length > 1
 				) {
 					return `Bought an NFT on OpenSea`
+				}
+
+				if (entry.insights.method.toLowerCase().includes('mint')) {
+					return `Minted an NFT`
 				}
 
 				return 'Interacted with a Smart Contract'
