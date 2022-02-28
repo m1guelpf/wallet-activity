@@ -4,9 +4,8 @@ import Insight, { Config } from '@/lib/Insight'
 import Augmenter from '@/lib/Augmenter'
 import { TxData } from '@/types/covalent'
 import type { TransactionResponse } from '@ethersproject/abstract-provider'
-import { getNetworkName } from '../utils'
 
-export enum CONTRACT_PURPOSE {
+export enum TX_PURPOSE {
 	ETH_TRANSFER = 'eth_transfer',
 	CONTRACT_DEPLOY = 'contract_deploy',
 	CONTRACT_INTERACTION = 'contract_interaction',
@@ -19,14 +18,14 @@ class GeneralPurpose extends Insight {
 	public async apply(tx: TxData, config: Config): Promise<{ generalPurpose: string; method?: string }> {
 		const provider = new ethers.providers.CloudflareProvider(config.chainId)
 
-		if (!tx.to_address) return { generalPurpose: CONTRACT_PURPOSE.CONTRACT_DEPLOY }
+		if (!tx.to_address) return { generalPurpose: TX_PURPOSE.CONTRACT_DEPLOY }
 
 		const txData = await provider.getTransaction(tx.tx_hash)
-		if (txData.data == '0x') return { generalPurpose: CONTRACT_PURPOSE.ETH_TRANSFER }
+		if (txData.data == '0x') return { generalPurpose: TX_PURPOSE.ETH_TRANSFER }
 
 		return {
 			method: await this.getMethod(txData),
-			generalPurpose: CONTRACT_PURPOSE.CONTRACT_INTERACTION,
+			generalPurpose: TX_PURPOSE.CONTRACT_INTERACTION,
 		}
 	}
 

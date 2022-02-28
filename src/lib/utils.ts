@@ -1,5 +1,8 @@
 import { ChainId, Network } from '@/types/utils'
 import { NextApiRequest } from 'next'
+import { ActivityEntry } from './Activity'
+import { contractNameReplacements, daysOfWeek, monthsOfYear, networks } from './consts'
+import { Interaction } from './insights/InterpretEvents'
 
 export const buildUrl = (req: NextApiRequest, page = 0, limit = 100): string => {
 	const url = new URL(req.url, `http://${req.headers.host}`)
@@ -15,38 +18,16 @@ export const buildUrl = (req: NextApiRequest, page = 0, limit = 100): string => 
 	}`
 }
 
-const networks: Record<Network, ChainId> = {
-	mainnet: 1,
-	kovan: 42,
-	polygon: 137,
-	mumbai: 80001,
-	arbitrum: 42161,
-	'arbitrum-rinkeby': 421611,
-}
-
 export const getChainId = (network: Network): ChainId => {
 	return networks[network]
 }
 
 export const getDayOfWeek = (date: Date): string => {
-	return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][date.getDay()]
+	return daysOfWeek[date.getDay()]
 }
 
 export const getMonthOfYear = (date: Date): string => {
-	return [
-		'January',
-		'February',
-		'March',
-		'April',
-		'May',
-		'June',
-		'July',
-		'August',
-		'September',
-		'October',
-		'November',
-		'December',
-	][date.getMonth()]
+	return monthsOfYear[date.getMonth()]
 }
 
 export const formatAddressShort = (address: string): string | null => {
@@ -60,4 +41,44 @@ export const formatAddressShort = (address: string): string | null => {
 
 export const addressEquals = (address1: string, address2: string): boolean => {
 	return address1?.toLowerCase() === address2?.toLowerCase()
+}
+
+export const correctContractName = (name: string): string => {
+	if (contractNameReplacements[name]) return contractNameReplacements[name]
+
+	return name
+}
+
+export type TransferEvent = {
+	contract: {
+		name: string
+		symbol: string
+		address: string
+	}
+	to: string | null
+	from: string | null
+	value: string | null
+	isNFT: boolean
+}
+
+export const parseTransferData = (entry: ActivityEntry): TransferEvent[] => {
+	return (
+		entry.insights.interactions
+			?.map(contract =>
+				contract.details
+					.filter(event => event.event.toLowerCase().includes('transfer'))
+					.map(event => ({
+						contract: {
+							name: contract.contract,
+							symbol: contract.contract_symbol,
+							address: contract.contract_address,
+						},
+						to: (event.to ?? event._to) as string | undefined,
+						from: (event.from ?? event._from) as string | undefined,
+						value: (event.value ?? event._value) as string | undefined,
+						isNFT: (event.value ?? event._value) === undefined,
+					}))
+			)
+			?.flat() ?? []
+	)
 }

@@ -1,13 +1,15 @@
-import useWeb3 from '@/hooks/useWeb3'
+import { useAccount } from 'wagmi'
 import { ButtonHTMLAttributes } from 'react'
 import { formatAddressShort } from '@/lib/utils'
 
 const ConnectWallet = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
-	const { web3, userAddress, userENS, connectWallet, disconnectWallet } = useWeb3()
+	const [{ data }, disconnect] = useAccount({ fetchEns: true })
+
+	if (!data?.address) return null
 
 	return (
-		<button {...props} onClick={web3 ? disconnectWallet : connectWallet}>
-			{userENS || formatAddressShort(userAddress) || 'Connect Wallet'}
+		<button onClick={disconnect} {...props}>
+			{data?.ens?.name || formatAddressShort(data?.address) || 'Connect Wallet'}
 		</button>
 	)
 }

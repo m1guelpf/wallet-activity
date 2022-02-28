@@ -1,5 +1,6 @@
 import { TxData } from '@/types/covalent'
 import Insight, { Config } from './Insight'
+import logger from './logger'
 
 type Module = {
 	registerInsight?: (Augmenter) => void
@@ -23,7 +24,7 @@ class Augmenter {
 		const insights = await Promise.allSettled(this.#insights.map(insight => insight.apply(tx, config)))
 
 		/* @TODO: Remove before going to production. */
-		insights.forEach(result => result.status == 'rejected' && console.log(result.reason))
+		insights.forEach(result => result.status == 'rejected' && logger.debug(result.reason))
 
 		return insights
 			.filter(result => result.status === 'fulfilled')

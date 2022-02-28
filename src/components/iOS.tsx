@@ -1,15 +1,16 @@
+import { useConnect } from 'wagmi'
+import iOSbg from '@images/ios-bg.png'
 import WifiIcon from './icons/WifiIcon'
 import { useTime } from '@/hooks/useTime'
+import SpinnerIcon from './icons/SpinnerIcon'
 import BatteryIcon from './icons/BatteryIcon'
 import EthereumIcon from './icons/EthereumIcon'
 import LockClosedIcon from './icons/LockClosedIcon'
 import { ChartBarIcon } from '@heroicons/react/solid'
-import { ForwardedRef, forwardRef, useEffect, useRef, useState } from 'react'
 import { getDayOfWeek, getMonthOfYear } from '@/lib/utils'
 import useElementVisibility from '@/hooks/useElementVisibility'
-import PersonViewFinderIcon from './icons/PersonViewFinderIcon'
 import { SwitchTransition, CSSTransition } from 'react-transition-group'
-import useWeb3 from '@/hooks/useWeb3'
+import { ForwardedRef, forwardRef, useEffect, useRef, useState } from 'react'
 import useBalance from '@/hooks/useBalance'
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {
@@ -30,7 +31,12 @@ const iOS = {
 
 		return (
 			<div className="flex items-center justify-center h-screen w-screen md:py-4 antialiased text-white bg-gray-900 to-black">
-				<div className="md:max-w-md bg-cover bg-ios md:rounded-xl transform scale-100 h-full md:h-auto md:max-h-4xl relative overflow-auto w-full">
+				<div
+					className="md:max-w-md bg-cover md:rounded-3xl transform scale-100 h-full md:h-auto md:max-h-4xl relative overflow-auto w-full"
+					style={{
+						backgroundImage: `linear-gradient(rgba(0, 0, 0, .1) 0%, rgba(0, 0,  0, .1) 100%), url('${iOSbg.src}')`,
+					}}
+				>
 					<div className="flex flex-col px-2 min-h-3xl h-full md:h-3xl">
 						<iOS.TopBar isStandalone={isStandalone} showTime={!timeVisible} />
 						<main className="pt-8 space-y-2 overflow-scroll min-h-0 flex flex-col flex-1 pb-4">
@@ -88,15 +94,19 @@ const iOS = {
 	),
 	LockedTime: forwardRef(({}, ref: ForwardedRef<HTMLDivElement>) => {
 		const time = useTime(1000) // refresh every second
-		const balance = useBalance()
-		const { userAddress } = useWeb3()
+		const [{ data }] = useConnect()
+		const { balance, usd_balance } = useBalance()
 
 		return (
 			<div className="pb-4 flex flex-col items-center" ref={ref}>
-				{userAddress ? <EthereumIcon className="w-9 h-9 mb-5" /> : <LockClosedIcon className="w-9 h-9 mb-5" />}
+				{data?.connected ? (
+					<EthereumIcon className="w-9 h-9 mb-5" />
+				) : (
+					<LockClosedIcon className="w-9 h-9 mb-5" />
+				)}
 				<h1 className="text-center text-8xl font-extralight">
-					{balance.balance ? (
-						<span>{balance.balance.toFixed(2)} ETH</span>
+					{balance ? (
+						<span>{balance} ETH</span>
 					) : (
 						<>
 							<span className='after:content-[":"] after:relative after:-top-2 after:text-white after:mx-0.5'>
@@ -107,8 +117,8 @@ const iOS = {
 					)}
 				</h1>
 				<p className="text-2xl tracking-tight text-center font-base">
-					{balance.usd_balance ? (
-						<span>{currencyFormatter.format(balance.usd_balance)}</span>
+					{usd_balance ? (
+						<span>{currencyFormatter.format(usd_balance)}</span>
 					) : (
 						<span>
 							{getDayOfWeek(time)}, {time.getDate()} {getMonthOfYear(time)}
@@ -125,17 +135,50 @@ const iOS = {
 			</div>
 		</footer>
 	),
-	ExplainerAlert: ({ className = '' }) => (
-		<div
-			className={`rounded-2xl backdrop-filter backdrop-blur-3xl backdrop-saturate-150 bg-black bg-opacity-40 p-3.5 ${className}`}
-		>
-			<p className="mb-3 text-xs font-medium leading-none uppercase opacity-50">Wallet not connected</p>
-			<div className="flex space-x-4 justify">
-				<p className="text-sm">Connect a wallet to view your transaction history, in a human-friendly way.</p>
-				<PersonViewFinderIcon className="pt-1 h-11 w-11" />
+	SetupModal: ({ className = '', dataLoading }: { className?: string; dataLoading: boolean }) => {
+		const [{ data, loading }, connect] = useConnect()
+
+		const isLoading = loading || dataLoading
+
+		return (
+			<div
+				className={`absolute bottom-0.5 inset-x-0.5 bg-white py-5 px-7 text-black md:rounded-3xl z-40 space-y-8 ${className}`}
+			>
+				<div className="space-y-2">
+					<p className="text-center font-light text-3xl text-gray-600">Wallet History</p>
+					<p className="text-center text-gray-600">Your transaction history, explained</p>
+				</div>
+				<div className="flex justify-center">
+					{/* eslint-disable-next-line @next/next/no-img-element */}
+					<img
+						className="w-2/3"
+						alt=""
+						src="https://images.ctfassets.net/9sy2a0egs6zh/5w0q0fWbGtmiSts6oIDJ5x/6746f0e6d562c0e8315d841eb4c85f87/Explore-illo.svg"
+					/>
+				</div>
+				<div className={`space-x-2 flex items-center ${isLoading ? 'justify-center' : 'justify-between'}`}>
+					{isLoading ? (
+						<div className="flex items-center justify-center space-x-1.5">
+							<SpinnerIcon className="w-4 h-4" />
+							<span className="">Connecting</span>
+						</div>
+					) : (
+						data.connectors.map(connector => (
+							<button
+								key={connector.id}
+								onClick={() => connect(connector)}
+								className={`py-3 w-full bg-gray-300 text-black font-medium rounded-xl transition hover:opacity-80 ${
+									loading ? 'invisible' : ''
+								}`}
+							>
+								{connector.name}
+							</button>
+						))
+					)}
+				</div>
 			</div>
-		</div>
-	),
+		)
+	},
 	Notification: ({ title, description, meta, metaSubtitle }) => (
 		<div className="rounded-2xl backdrop-filter backdrop-blur-3xl backdrop-saturate-150 bg-black bg-opacity-40 p-3 flex items-center space-x-3">
 			<EthereumIcon className="h-10 w-10" />

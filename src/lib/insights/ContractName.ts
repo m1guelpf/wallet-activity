@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client'
 import Insight, { Config } from '@/lib/Insight'
 import { ethers } from 'ethers'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
+import { correctContractName } from '../utils'
 
 class ContractName extends Insight {
 	name = 'Contract Name'
@@ -17,7 +18,9 @@ class ContractName extends Insight {
 
 	public async apply(tx: TxData, config: Config): Promise<{ contractName: string | null }> {
 		if (tx.to_address) {
-			const contractName = await this.getNameFor(tx.to_address?.toLowerCase(), config.chainId)
+			const contractName = correctContractName(
+				await this.getNameFor(tx.to_address?.toLowerCase(), config.chainId)
+			)
 
 			return { contractName }
 		}
@@ -25,7 +28,7 @@ class ContractName extends Insight {
 		const provider = new ethers.providers.CloudflareProvider(config.chainId)
 		const txData = (await provider.getTransaction(tx.tx_hash)) as TransactionResponse & { creates: string }
 
-		const contractName = await this.getNameFor(txData.creates?.toLowerCase(), config.chainId)
+		const contractName = correctContractName(await this.getNameFor(txData.creates?.toLowerCase(), config.chainId))
 
 		return { contractName }
 	}

@@ -1,18 +1,27 @@
+import { FC } from 'react'
 import '@/styles/styles.css'
-import { ethers } from 'ethers'
+import { providers } from 'ethers'
 import { AppProps } from 'next/app'
-import { FC, useState } from 'react'
-import Web3Context from '@/context/Web3Context'
+import { chain, InjectedConnector, WagmiProvider } from 'wagmi'
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 
-const App: FC<AppProps> = ({ Component, pageProps }) => {
-	const [web3, setWeb3] = useState<ethers.providers.Web3Provider>(null)
-	const [userAddress, setUserAddress] = useState<string>(null)
+const connectors = [
+	new InjectedConnector({ chains: [chain.mainnet] }),
+	new WalletConnectConnector({
+		chains: [chain.mainnet],
+		options: {
+			infuraId: process.env.NEXT_PUBLIC_INFURA_ID,
+			qrcode: true,
+		},
+	}),
+]
 
-	return (
-		<Web3Context.Provider value={{ web3, setWeb3, userAddress, setUserAddress }}>
-			<Component {...pageProps} />
-		</Web3Context.Provider>
-	)
-}
+const provider = ({ chainId }) => new providers.InfuraProvider(chainId, process.env.NEXT_PUBLIC_INFURA_ID)
+
+const App: FC<AppProps> = ({ Component, pageProps }) => (
+	<WagmiProvider autoConnect connectorStorageKey="wallet" connectors={connectors} provider={provider}>
+		<Component {...pageProps} />
+	</WagmiProvider>
+)
 
 export default App
