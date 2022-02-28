@@ -27,4 +27,3 @@ class ENSRenewal extends Inspector {
 }
 
 export default ENSRenewal
-export const registerInspector = (interpreter: typeof Interpreter) => interpreter.register(new ENSRenewal())
