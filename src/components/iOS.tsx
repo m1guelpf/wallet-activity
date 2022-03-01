@@ -30,7 +30,7 @@ const iOS = {
 		}, [])
 
 		return (
-			<div className="flex items-center justify-center h-screen w-screen md:py-4 antialiased text-white bg-gray-900 to-black">
+			<div className="flex items-center justify-center md:h-screen w-screen md:py-4 antialiased text-white bg-gray-900 to-black">
 				<div
 					className="md:max-w-md bg-cover md:rounded-3xl transform scale-100 h-full md:h-auto md:max-h-4xl relative overflow-auto w-full"
 					style={{
@@ -39,7 +39,7 @@ const iOS = {
 				>
 					<div className="flex flex-col px-2 min-h-3xl h-full md:h-3xl">
 						<iOS.TopBar isStandalone={isStandalone} showTime={!timeVisible} />
-						<main className="pt-8 space-y-2 overflow-scroll min-h-0 flex flex-col flex-1 pb-4">
+						<main className="pt-8 space-y-2 min-h-0 flex flex-col flex-1 pb-4">
 							<iOS.LockedTime ref={timeRef} />
 							{children}
 						</main>
