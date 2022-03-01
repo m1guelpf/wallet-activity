@@ -1,13 +1,26 @@
 import { ethers } from 'ethers'
-import Insight from '@/lib/Insight'
 import Augmenter from '@/lib/Augmenter'
 import { TxData } from '@/types/covalent'
-
-const provider = new ethers.providers.CloudflareProvider()
+import Multicall from '../clients/multicall'
+import Insight, { Config } from '@/lib/Insight'
 
 class ENSNames extends Insight {
 	name = 'ENS Names'
 	#ensCache: Record<string, string | null> = { null: null }
+
+	public async applyAll(txs: TxData[], config: Config): Promise<TxData[]> {
+		const provider = new ethers.providers.AlchemyProvider(config.chainId, process.env.ALCHEMY_KEY)
+		const multicall = new Multicall(config.chainId, provider)
+
+		this.#ensCache = await multicall.resolveNames(
+			txs
+				.map(tx => [tx.from_address, tx.to_address])
+				.flat()
+				.filter(address => address)
+		)
+
+		return txs
+	}
 
 	public async apply(tx: TxData): Promise<{ fromENS: string; toENS: string }> {
 		const [fromENS, toENS] = await Promise.all([this.getENSFor(tx.from_address), this.getENSFor(tx.to_address)])
@@ -17,12 +30,8 @@ class ENSNames extends Insight {
 
 	protected async getENSFor(address: string): Promise<string | null> {
 		if (!address) return null
-		if (this.#ensCache[address]) return this.#ensCache[address]
 
-		const ens = await provider.lookupAddress(address)
-		this.#ensCache[address] = ens
-
-		return ens
+		return this.#ensCache[address]
 	}
 }
 

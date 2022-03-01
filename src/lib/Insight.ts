@@ -19,6 +19,10 @@ export class InsightFailed extends Error {
 abstract class Insight {
 	name: string
 
+	public async applyAll(txs: TxData[], config: Config): Promise<TxData[]> {
+		return txs
+	}
+
 	abstract apply(tx: TxData, config: Config): Promise<Record<string, unknown>>
 }
 

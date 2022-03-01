@@ -1,6 +1,9 @@
+import { ethers } from 'ethers'
 import { NextApiRequest } from 'next'
 import { ActivityEntry } from './Activity'
+import { Formatter } from '@ethersproject/providers'
 import { ChainId, Network, TransferEvent } from '@/types/utils'
+import { TransactionResponse } from '@ethersproject/abstract-provider'
 import { contractNameReplacements, daysOfWeek, monthsOfYear, networks } from './consts'
 
 export const buildUrl = (req: NextApiRequest, page = 0, limit = 100): string => {
@@ -68,4 +71,14 @@ export const parseTransferData = (entry: ActivityEntry): TransferEvent[] => {
 			)
 			?.flat() ?? []
 	)
+}
+
+const formatter = new Formatter()
+export const getTx = async (
+	provider: ethers.providers.JsonRpcProvider,
+	transactionHash: string
+): Promise<TransactionResponse & { creates: string }> => {
+	return formatter.transactionResponse(
+		await provider.perform('getTransaction', { transactionHash })
+	) as TransactionResponse & { creates: string }
 }

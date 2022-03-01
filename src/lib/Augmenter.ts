@@ -20,6 +20,14 @@ class Augmenter {
 			.map(key => insights<Module>(key)?.registerInsight?.(this))
 	}
 
+	public async augmentAll(txs: TxData[], config: Config): Promise<TxData[]> {
+		for (const insight of this.#insights) {
+			txs = await insight.applyAll(txs, config)
+		}
+
+		return txs
+	}
+
 	public async augment(tx: TxData, config: Config): Promise<Record<string, unknown>> {
 		const insights = await Promise.allSettled(this.#insights.map(insight => insight.apply(tx, config)))
 

@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 import Augmenter from '@/lib/Augmenter'
 import { TxData } from '@/types/covalent'
 import { PrismaClient } from '@prisma/client'
-import { correctContractName } from '../utils'
+import { correctContractName, getTx } from '../utils'
 import Insight, { Config } from '@/lib/Insight'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
 
@@ -25,10 +25,7 @@ class ContractName extends Insight {
 			return { contractName }
 		}
 
-		const provider = new ethers.providers.CloudflareProvider(config.chainId)
-		const txData = (await provider.getTransaction(tx.tx_hash)) as TransactionResponse & { creates: string }
-
-		const contractName = correctContractName(await this.getNameFor(txData.creates?.toLowerCase(), config.chainId))
+		const contractName = correctContractName(await this.getNameFor(tx.creates?.toLowerCase(), config.chainId))
 
 		return { contractName }
 	}
