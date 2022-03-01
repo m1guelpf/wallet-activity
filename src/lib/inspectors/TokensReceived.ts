@@ -25,9 +25,17 @@ class TokensReceived extends Inspector {
 		if (received.length == 1 && received[0].isNFT) {
 			return {
 				title: `Received ${entry.insights.contractName ? a(entry.insights.contractName) : 'an'} NFT`,
-				description: `${formatAddressShort(entry.insights?.fromENS || entry.raw.from)} sent you an NFT`,
+				description: `${formatAddressShort(
+					entry.insights?.fromENS || received[0].from?.[0] || entry.raw.from
+				)} sent you an NFT`,
 			}
 		}
+
+		const from = received
+			.map(transfer => transfer.from)
+			.flat()
+			.map(addr => formatAddressShort(addr))
+			.join(', ')
 
 		return {
 			title: `Received ${received
@@ -37,7 +45,9 @@ class TokensReceived extends Inspector {
 					return `${millify(transfer.amount)} $${transfer.contract.symbol}`
 				})
 				.join(', ')}`,
-			description: `${entry.insights?.fromENS || formatAddressShort(entry.raw.from)} sent you some tokens`,
+			description: `${
+				from || entry.insights?.fromENS || formatAddressShort(entry.raw.from)
+			} sent you some tokens`,
 		}
 	}
 
@@ -51,6 +61,7 @@ class TokensReceived extends Inspector {
 			address: string
 		}
 		isNFT: boolean
+		from: string[]
 		amount: number
 	}> {
 		return collect(parseTransferData(entry).filter(transfer => addressEquals(transfer.to, userAddress)))
@@ -62,6 +73,7 @@ class TokensReceived extends Inspector {
 				return {
 					contract: oneOf.contract,
 					isNFT: oneOf.isNFT,
+					from: aggregateTransfers.map(transfer => transfer.from).toArray(),
 					amount: aggregateTransfers.map(transfer => parseFloat(transfer.value)).sum(),
 				}
 			})
