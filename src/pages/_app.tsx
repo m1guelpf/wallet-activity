@@ -6,7 +6,7 @@ import { chain, InjectedConnector, WagmiProvider } from 'wagmi'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 
 const connectors = [
-	new InjectedConnector({ chains: [chain.mainnet] }),
+	new InjectedConnector({ chains: [chain.mainnet], options: { shimDisconnect: true } }),
 	new WalletConnectConnector({
 		chains: [chain.mainnet],
 		options: {
@@ -16,7 +16,7 @@ const connectors = [
 	}),
 ]
 
-const provider = ({ chainId }) => new providers.InfuraProvider(chainId, process.env.NEXT_PUBLIC_INFURA_ID)
+const provider = () => new providers.InfuraProvider(chain.mainnet.id, process.env.NEXT_PUBLIC_INFURA_ID)
 
 const App: FC<AppProps> = ({ Component, pageProps }) => (
 	<WagmiProvider autoConnect connectorStorageKey="wallet" connectors={connectors} provider={provider}>
