@@ -9,7 +9,10 @@ class ENSNames extends Insight {
 	#ensCache: Record<string, string | null> = { null: null }
 
 	public async applyAll(txs: TxData[], config: Config): Promise<TxData[]> {
-		const provider = new ethers.providers.AlchemyProvider(config.chainId, process.env.ALCHEMY_KEY)
+		const provider = new ethers.providers.StaticJsonRpcProvider(
+			{ url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}` },
+			config.chainId
+		)
 		const multicall = new Multicall(config.chainId, provider)
 
 		this.#ensCache = await multicall.resolveNames(

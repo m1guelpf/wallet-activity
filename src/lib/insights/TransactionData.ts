@@ -12,7 +12,10 @@ class TransactionData extends Insight {
 	}
 
 	public async applyAll(txs: TxData[], config: Config): Promise<TxData[]> {
-		const provider = new ethers.providers.AlchemyProvider(config.chainId, process.env.ALCHEMY_KEY)
+		const provider = new ethers.providers.StaticJsonRpcProvider(
+			{ url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}` },
+			config.chainId
+		)
 
 		return Promise.all(
 			txs.map(async tx => {

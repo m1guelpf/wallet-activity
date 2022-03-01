@@ -11,7 +11,7 @@ import TransactionRender from '@/components/TransactionRender'
 const Index: FC = () => {
 	const userAddress = useAddress()
 	const { data: activity, isValidating: loading } = useSWRImmutable<ActivityData>(
-		() => userAddress && `/api/activity/${userAddress}?limit=15`,
+		() => userAddress && `/api/activity/${userAddress}?limit=30`,
 		url => axios.get(url).then(res => res.data),
 		{}
 	)
