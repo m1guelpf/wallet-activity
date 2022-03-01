@@ -1,3 +1,4 @@
+import logger from '../logger'
 import { ethers } from 'ethers'
 import { ActivityEntry } from '../Activity'
 import { formatAddressShort } from '../utils'
@@ -29,6 +30,13 @@ class TokenApproval extends Inspector {
 					entry.insights.contractName || formatAddressShort(entry.insights.toENS || entry.raw.to)
 				} NFTs`,
 			}
+		}
+
+		// Apparently some people send approval inputs to EOAs??
+		if (entry.insights.interactions.length === 0) {
+			logger.debug(`invalid approval`, entry)
+
+			return { hideTransaction: true }
 		}
 
 		const ticker = entry.insights.interactions[0].contract_symbol
