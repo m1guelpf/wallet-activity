@@ -13,14 +13,16 @@ class ETHTransfer extends Inspector {
 	resolve(entry: ActivityEntry, config: Config): InspectorResult {
 		if (addressEquals(entry.raw.from, config.userAddress)) {
 			return {
-				title: `Sent ${parseFloat(entry.value_in_eth).toFixed(2)} ETH to ${formatAddressShort(
+				title: 'Sent ETH',
+				description: `You sent ${parseFloat(entry.value_in_eth).toFixed(2)} ETH to ${formatAddressShort(
 					entry.insights.toENS || entry.raw.to
 				)}`,
 			}
 		}
 
 		return {
-			title: `Received ${parseFloat(entry.value_in_eth).toFixed(2)} ETH from ${formatAddressShort(
+			title: 'Received ETH',
+			description: `You got ${parseFloat(entry.value_in_eth).toFixed(2)} ETH from ${formatAddressShort(
 				entry.insights.fromENS || entry.raw.from
 			)}`,
 		}

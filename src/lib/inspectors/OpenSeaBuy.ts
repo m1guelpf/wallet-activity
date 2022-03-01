@@ -15,8 +15,12 @@ class OpenSeaBuy extends Inspector {
 	public check(entry: ActivityEntry, config: Config): boolean {
 		return (
 			entry.insights.generalPurpose === TX_PURPOSE.CONTRACT_INTERACTION &&
-			WYVERN_EXCHANGE.includes(entry.raw.to.toLowerCase()) &&
-			entry.insights.method === 'atomicMatch_'
+			((WYVERN_EXCHANGE.includes(entry.raw.to.toLowerCase()) && entry.insights.method === 'atomicMatch_') ||
+				entry.insights.interactions?.some(
+					contract =>
+						WYVERN_EXCHANGE.includes(contract.contract_address.toLowerCase()) &&
+						contract.details?.some(event => event.event === 'OrdersMatched')
+				))
 		)
 	}
 
@@ -44,12 +48,16 @@ class OpenSeaBuy extends Inspector {
 		const isBuy = addressEquals(transfersNFT.random().to as string, config.userAddress)
 
 		const boughtNFTs = transfersNFT
+			.filter(
+				transfer =>
+					addressEquals(transfer.from, config.userAddress) || addressEquals(transfer.to, config.userAddress)
+			)
 			.groupBy('contract.address')
 			.values()
 			.map((transfers: Collection<TransferEvent>): string => {
 				const oneOf = transfers.random()
 
-				if (transfers.count() > 1) return a(`${transfers.count()} ${correctContractName(oneOf.contract.name)}`)
+				if (transfers.count() > 1) return `${transfers.count()} ${correctContractName(oneOf.contract.name)}`
 				return a(correctContractName(oneOf.contract.name))
 			})
 			.toArray()
