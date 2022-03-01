@@ -1,6 +1,6 @@
+import logger from './logger'
 import { TxData } from '@/types/covalent'
 import Insight, { Config } from './Insight'
-import logger from './logger'
 
 type Module = {
 	registerInsight?: (Augmenter) => void

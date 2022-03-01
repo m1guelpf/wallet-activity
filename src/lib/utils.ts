@@ -1,8 +1,7 @@
-import { ChainId, Network } from '@/types/utils'
 import { NextApiRequest } from 'next'
 import { ActivityEntry } from './Activity'
+import { ChainId, Network, TransferEvent } from '@/types/utils'
 import { contractNameReplacements, daysOfWeek, monthsOfYear, networks } from './consts'
-import { Interaction } from './insights/InterpretEvents'
 
 export const buildUrl = (req: NextApiRequest, page = 0, limit = 100): string => {
 	const url = new URL(req.url, `http://${req.headers.host}`)
@@ -47,18 +46,6 @@ export const correctContractName = (name: string): string => {
 	if (contractNameReplacements[name]) return contractNameReplacements[name]
 
 	return name
-}
-
-export type TransferEvent = {
-	contract: {
-		name: string
-		symbol: string
-		address: string
-	}
-	to: string | null
-	from: string | null
-	value: string | null
-	isNFT: boolean
 }
 
 export const parseTransferData = (entry: ActivityEntry): TransferEvent[] => {

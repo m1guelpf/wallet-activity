@@ -1,7 +1,7 @@
 import a from 'indefinite'
-import { addressEquals, parseTransferData } from '../utils'
 import { ActivityEntry } from '../Activity'
 import { TX_PURPOSE } from '../insights/GeneralPurpose'
+import { addressEquals, parseTransferData } from '../utils'
 import Inspector, { Config, InspectorResult } from '../Inspector'
 
 class NFTMint extends Inspector {

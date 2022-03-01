@@ -1,8 +1,8 @@
 import axios from 'axios'
 import { ethers } from 'ethers'
-import Insight, { Config } from '@/lib/Insight'
 import Augmenter from '@/lib/Augmenter'
 import { TxData } from '@/types/covalent'
+import Insight, { Config } from '@/lib/Insight'
 import type { TransactionResponse } from '@ethersproject/abstract-provider'
 
 export enum TX_PURPOSE {

@@ -2,6 +2,7 @@ import { useConnect } from 'wagmi'
 import iOSbg from '@images/ios-bg.png'
 import WifiIcon from './icons/WifiIcon'
 import { useTime } from '@/hooks/useTime'
+import useBalance from '@/hooks/useBalance'
 import SpinnerIcon from './icons/SpinnerIcon'
 import BatteryIcon from './icons/BatteryIcon'
 import EthereumIcon from './icons/EthereumIcon'
@@ -11,7 +12,6 @@ import { getDayOfWeek, getMonthOfYear } from '@/lib/utils'
 import useElementVisibility from '@/hooks/useElementVisibility'
 import { SwitchTransition, CSSTransition } from 'react-transition-group'
 import { ForwardedRef, forwardRef, useEffect, useRef, useState } from 'react'
-import useBalance from '@/hooks/useBalance'
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {
 	style: 'currency',

@@ -1,5 +1,7 @@
 import { ChainId, Network } from '@/types/utils'
 
+export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+
 export const networks: Record<Network, ChainId> = {
 	mainnet: 1,
 	kovan: 42,

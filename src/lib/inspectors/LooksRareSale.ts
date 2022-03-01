@@ -1,22 +1,19 @@
-import collect, { Collection } from 'collect.js'
 import a from 'indefinite'
 import { ActivityEntry } from '../Activity'
+import collect, { Collection } from 'collect.js'
 import { TX_PURPOSE } from '../insights/GeneralPurpose'
+import { addressEquals, parseTransferData } from '../utils'
 import Inspector, { Config, InspectorResult } from '../Inspector'
-import { addressEquals, parseTransferData, TransferEvent } from '../utils'
+import { TransferEvent } from '@/types/utils'
 
 const LOOKSRARE_EXCHANGE = '0x59728544b08ab483533076417fbbb2fd0b17ce3a'
 
 const SUPPORTED_METHODS = ['matchAskWithTakerBidUsingETHAndWETH']
 
-type TakerBidEvent = {
-	event: string
-}
-
 class LooksRareSale extends Inspector {
 	name = 'LooksRare Sale'
 
-	public check(entry: ActivityEntry, config: Config): boolean {
+	public check(entry: ActivityEntry): boolean {
 		return (
 			entry.insights.generalPurpose === TX_PURPOSE.CONTRACT_INTERACTION &&
 			addressEquals(entry.raw.to, LOOKSRARE_EXCHANGE) &&

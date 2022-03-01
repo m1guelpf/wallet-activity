@@ -7,3 +7,15 @@ export enum Network {
 	ARBITRUM = 'arbitrum',
 	ARBITRUM_RINKEBY = 'arbitrum-rinkeby',
 }
+
+export type TransferEvent = {
+	contract: {
+		name: string
+		symbol: string
+		address: string
+	}
+	to: string | null
+	from: string | null
+	value: string | null
+	isNFT: boolean
+}

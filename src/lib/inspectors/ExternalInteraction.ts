@@ -1,7 +1,8 @@
+import logger from '../logger'
 import { ActivityEntry } from '../Activity'
 import { TX_PURPOSE } from '../insights/GeneralPurpose'
-import Inspector, { Config, InspectorResult } from '../Inspector'
 import { addressEquals, formatAddressShort } from '../utils'
+import Inspector, { Config, InspectorResult } from '../Inspector'
 
 class ExternalInteraction extends Inspector {
 	name = 'External Interaction'
@@ -14,7 +15,7 @@ class ExternalInteraction extends Inspector {
 	}
 
 	resolve(entry: ActivityEntry): InspectorResult {
-		console.log(entry)
+		logger.debug(entry)
 
 		return {
 			title: 'Smart Contract Call',

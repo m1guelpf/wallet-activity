@@ -1,5 +1,5 @@
-import { TxData } from '@/types/covalent'
 import { ChainId } from '@/types/utils'
+import { TxData } from '@/types/covalent'
 
 export type Config = {
 	chainId: ChainId

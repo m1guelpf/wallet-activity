@@ -1,10 +1,13 @@
 import a from 'indefinite'
-import { ActivityEntry } from '../Activity'
-import { TX_PURPOSE } from '../insights/GeneralPurpose'
-import { addressEquals, formatAddressShort, parseTransferData, TransferEvent } from '../utils'
-import Inspector, { Config, InspectorResult } from '../Inspector'
-import collect, { Collection } from 'collect.js'
 import millify from 'millify'
+import logger from '../logger'
+import { ZERO_ADDRESS } from '../consts'
+import { ActivityEntry } from '../Activity'
+import { TransferEvent } from '@/types/utils'
+import collect, { Collection } from 'collect.js'
+import { TX_PURPOSE } from '../insights/GeneralPurpose'
+import Inspector, { Config, InspectorResult } from '../Inspector'
+import { addressEquals, formatAddressShort, parseTransferData } from '../utils'
 
 class TokensReceived extends Inspector {
 	name = 'Tokens Received'
@@ -19,6 +22,7 @@ class TokensReceived extends Inspector {
 
 	resolve(entry: ActivityEntry, config: Config): InspectorResult {
 		if (entry.insights.contractName == 'ENS') return { title: 'Received an ENS name' }
+		logger.debug(entry)
 
 		const received = this.aggregateReceived(entry, config.userAddress)
 
@@ -32,9 +36,12 @@ class TokensReceived extends Inspector {
 		}
 
 		const from = received
-			.map(transfer => transfer.from)
+			.map(transfer =>
+				transfer.from.map(addr =>
+					formatAddressShort(addressEquals(addr, ZERO_ADDRESS) ? transfer.contract.address : addr)
+				)
+			)
 			.flat()
-			.map(addr => formatAddressShort(addr))
 			.join(', ')
 
 		return {

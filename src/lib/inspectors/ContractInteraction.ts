@@ -1,7 +1,8 @@
+import logger from '../logger'
 import { ActivityEntry } from '../Activity'
 import { TX_PURPOSE } from '../insights/GeneralPurpose'
-import Inspector, { Config, InspectorResult } from '../Inspector'
 import { addressEquals, formatAddressShort } from '../utils'
+import Inspector, { Config, InspectorResult } from '../Inspector'
 
 class ContractInteraction extends Inspector {
 	name = 'Contract Interaction'
@@ -14,7 +15,7 @@ class ContractInteraction extends Inspector {
 	}
 
 	resolve(entry: ActivityEntry): InspectorResult {
-		console.log(entry)
+		logger.debug(entry)
 		return {
 			title: 'Interacted with a Smart Contract',
 			description:

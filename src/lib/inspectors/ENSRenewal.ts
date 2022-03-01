@@ -2,7 +2,6 @@ import { ActivityEntry } from '../Activity'
 import { TX_PURPOSE } from '../insights/GeneralPurpose'
 import { Interaction } from '../insights/InterpretEvents'
 import Inspector, { InspectorResult } from '../Inspector'
-import Interpreter from '../Interpreter'
 
 const ENS_BASE_REGISTRAR = '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85'
 

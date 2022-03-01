@@ -1,7 +1,7 @@
 import { ActivityEntry } from '../Activity'
 import { TX_PURPOSE } from '../insights/GeneralPurpose'
-import Inspector, { Config, InspectorResult } from '../Inspector'
 import { addressEquals, formatAddressShort } from '../utils'
+import Inspector, { Config, InspectorResult } from '../Inspector'
 
 class ETHTransfer extends Inspector {
 	name = 'ETH Transfer'

@@ -1,12 +1,10 @@
 class Logger {
 	#timers: Record<string, number> = {}
 
-	public time<T>(key: string, op: () => T): T {
-		this.startTimer(key)
-		const result = op()
-		this.endTimer(key)
+	public debug(...data: any[]): void {
+		if (process.env.NODE_ENV !== 'development') return
 
-		return result
+		console.log(...data)
 	}
 
 	public startTimer(key: string): void {
@@ -22,10 +20,12 @@ class Logger {
 		return elapsed
 	}
 
-	public debug(...data: any[]): void {
-		if (process.env.NODE_ENV !== 'development') return
+	public time<T>(key: string, op: () => T): T {
+		this.startTimer(key)
+		const result = op()
+		this.endTimer(key)
 
-		console.log(...data)
+		return result
 	}
 }
 

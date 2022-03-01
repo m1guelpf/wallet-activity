@@ -1,8 +1,8 @@
 import { useAccount } from 'wagmi'
-import { ButtonHTMLAttributes } from 'react'
+import { ButtonHTMLAttributes, FC } from 'react'
 import { formatAddressShort } from '@/lib/utils'
 
-const ConnectWallet = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
+const ConnectWallet: FC<ButtonHTMLAttributes<HTMLButtonElement>> = props => {
 	const [{ data }, disconnect] = useAccount({ fetchEns: true })
 
 	if (!data?.address) return null

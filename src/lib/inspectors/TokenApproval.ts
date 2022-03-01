@@ -1,7 +1,7 @@
 import { ActivityEntry } from '../Activity'
+import { formatAddressShort } from '../utils'
 import { TX_PURPOSE } from '../insights/GeneralPurpose'
 import Inspector, { Config, InspectorResult } from '../Inspector'
-import { formatAddressShort } from '../utils'
 
 enum APPROVAL_METHODS {
 	ERC20 = 'approve',

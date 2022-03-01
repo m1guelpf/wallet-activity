@@ -1,9 +1,10 @@
-import collect, { Collection } from 'collect.js'
 import a from 'indefinite'
 import { ActivityEntry } from '../Activity'
+import { TransferEvent } from '@/types/utils'
+import collect, { Collection } from 'collect.js'
 import { TX_PURPOSE } from '../insights/GeneralPurpose'
+import { addressEquals, parseTransferData } from '../utils'
 import Inspector, { Config, InspectorResult } from '../Inspector'
-import { addressEquals, parseTransferData, TransferEvent } from '../utils'
 
 const WYVERN_EXCHANGE = ['0x7be8076f4ea4a4ad08075c2508e481d6c946d12b', '0x7f268357a8c2552623316e2562d90e642bb538e5']
 

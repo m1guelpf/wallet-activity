@@ -2,11 +2,11 @@ import axios from 'axios'
 import { FC } from 'react'
 import iOS from '@/components/iOS'
 import Layout from '@/components/Layout'
+import useAddress from '@/hooks/useAddress'
 import useSWRImmutable from 'swr/immutable'
 import { ActivityData } from '@/lib/Activity'
 import ConnectWallet from '@/components/ConnectWallet'
 import TransactionRender from '@/components/TransactionRender'
-import useAddress from '@/hooks/useAdress'
 
 const Index: FC = () => {
 	const userAddress = useAddress()

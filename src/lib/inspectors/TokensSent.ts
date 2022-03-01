@@ -1,8 +1,8 @@
 import a from 'indefinite'
-import { addressEquals, formatAddressShort, parseTransferData } from '../utils'
 import { ActivityEntry } from '../Activity'
 import { TX_PURPOSE } from '../insights/GeneralPurpose'
 import Inspector, { Config, InspectorResult } from '../Inspector'
+import { addressEquals, formatAddressShort, parseTransferData } from '../utils'
 
 class TokensSent extends Inspector {
 	name = 'Tokens Sent'

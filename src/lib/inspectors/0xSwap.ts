@@ -1,32 +1,34 @@
 import millify from 'millify'
+import { addressEquals } from '../utils'
 import { ActivityEntry } from '../Activity'
 import { TX_PURPOSE } from '../insights/GeneralPurpose'
 import Inspector, { InspectorResult } from '../Inspector'
 
-class UniswapV2Swap extends Inspector {
-	name = 'Uniswap v2 Swap'
+const OX_EXCHANGE = '0xdef1c0ded9bec7f1a1670819833240f027b25eff'
+
+class OxSwap extends Inspector {
+	name = '0x Swap'
 
 	public check(entry: ActivityEntry): boolean {
 		return (
 			entry.insights.generalPurpose === TX_PURPOSE.CONTRACT_INTERACTION &&
-			entry.insights.interactions
-				?.find(contract => contract.contract === 'Uniswap V2')
-				?.details?.some(event => event.event == 'Swap')
+			addressEquals(entry.raw.to, OX_EXCHANGE)
 		)
 	}
 
 	resolve(entry: ActivityEntry): InspectorResult {
-		const uniData = this.getSwapDetails(entry)
+		const swapData = this.getSwapDetails(entry)
 
 		return {
-			title: `Swapped ${millify(parseFloat(uniData.in.amount))} ${uniData.in.ticker} for ${millify(
-				parseFloat(uniData.out.amount as string)
-			)} $${uniData.out.ticker}`,
+			title: `Swapped ${millify(parseFloat(swapData.in.amount))} ${swapData.in.ticker} for ${millify(
+				parseFloat(swapData.out.amount as string)
+			)} $${swapData.out.ticker}`,
 		}
 	}
 
 	protected getSwapDetails(entry: ActivityEntry) {
-		const tokens = entry.insights.interactions.filter(contract => contract.contract != 'Uniswap V2')
+		// Swaps going thru Sushi contain an additional transfer that doesn't concern the user
+		const tokens = entry.insights.interactions.filter(contract => contract.contract != 'SushiSwap LP Token')
 		const tokenOut = tokens[0]
 		let tokenIn
 
@@ -48,4 +50,4 @@ class UniswapV2Swap extends Inspector {
 	}
 }
 
-export default UniswapV2Swap
+export default OxSwap
