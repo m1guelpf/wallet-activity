@@ -22,7 +22,7 @@ class TokensReceived extends Inspector {
 
 	resolve(entry: ActivityEntry, config: Config): InspectorResult {
 		if (entry.insights.contractName == 'ENS') return { title: 'Received an ENS name' }
-		logger.debug(entry)
+		logger.debug('received', entry)
 
 		const received = this.aggregateReceived(entry, config.userAddress)
 

@@ -8,7 +8,7 @@ import Inspector, { Config, InspectorResult } from '../Inspector'
 const IGNORED_ADDRESSES = []
 
 class GeneralSwap extends Inspector {
-	name = 'Tokens Received'
+	name = 'General Swap'
 
 	public check(entry: ActivityEntry, config: Config): boolean {
 		if (

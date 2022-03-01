@@ -32,4 +32,5 @@ export const contractNameReplacements = {
 	'OpenSea Shared Storefront': 'Opensea',
 	'Project Wyvern Exchange': 'Opensea',
 	'ENS: Base Registrar': 'ENS',
+	Guestbook__v1_0: 'Guestbook',
 }

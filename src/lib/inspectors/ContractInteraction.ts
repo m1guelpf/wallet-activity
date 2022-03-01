@@ -15,7 +15,7 @@ class ContractInteraction extends Inspector {
 	}
 
 	resolve(entry: ActivityEntry): InspectorResult {
-		logger.debug(entry)
+		logger.debug('interaction', entry)
 		return {
 			title: 'Interacted with a Smart Contract',
 			description:

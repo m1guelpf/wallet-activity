@@ -15,7 +15,7 @@ class ExternalInteraction extends Inspector {
 	}
 
 	resolve(entry: ActivityEntry): InspectorResult {
-		logger.debug(entry)
+		logger.debug('external', entry)
 
 		return {
 			title: 'Smart Contract Call',

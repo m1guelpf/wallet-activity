@@ -5,6 +5,7 @@ import collect, { Collection } from 'collect.js'
 import { TX_PURPOSE } from '../insights/GeneralPurpose'
 import { addressEquals, parseTransferData } from '../utils'
 import Inspector, { Config, InspectorResult } from '../Inspector'
+import { formatUnits } from 'ethers/lib/utils'
 
 const WYVERN_EXCHANGE = ['0x7be8076f4ea4a4ad08075c2508e481d6c946d12b', '0x7f268357a8c2552623316e2562d90e642bb538e5']
 
@@ -21,6 +22,20 @@ class OpenSeaBuy extends Inspector {
 
 	resolve(entry: ActivityEntry, config: Config): InspectorResult {
 		const transfersNFT = collect(parseTransferData(entry)).filter(transfer => transfer.isNFT)
+
+		if (transfersNFT.isEmpty()) {
+			const matchEvent = entry.insights.interactions[0].details.find(event => event.event === 'OrdersMatched')
+
+			const isBuy = addressEquals(matchEvent?.maker as string, config.userAddress)
+
+			return {
+				title: `${isBuy ? 'Bought' : 'Sold'} an NFT on OpenSea`,
+				description: `${isBuy ? 'Bought' : 'Sold'} an NFT for ${parseFloat(
+					formatUnits((matchEvent?.price as string) || '0') || entry.value_in_eth
+				).toFixed(2)} ETH`,
+			}
+		}
+
 		const isBuy = addressEquals(transfersNFT.random().to as string, config.userAddress)
 
 		const boughtNFTs = transfersNFT
