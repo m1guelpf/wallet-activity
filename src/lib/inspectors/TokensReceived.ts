@@ -71,7 +71,11 @@ class TokensReceived extends Inspector {
 		from: string[]
 		amount: number
 	}> {
-		return collect(parseTransferData(entry).filter(transfer => addressEquals(transfer.to, userAddress)))
+		return collect(
+			parseTransferData(entry).filter(
+				transfer => addressEquals(transfer.from, userAddress) || addressEquals(transfer.to, userAddress)
+			)
+		)
 			.groupBy('contract.address')
 			.values()
 			.map((aggregateTransfers: Collection<TransferEvent & { isNFT: boolean }>) => {
@@ -80,10 +84,20 @@ class TokensReceived extends Inspector {
 				return {
 					contract: oneOf.contract,
 					isNFT: oneOf.isNFT,
-					from: aggregateTransfers.map(transfer => transfer.from).toArray(),
-					amount: aggregateTransfers.map(transfer => parseFloat(transfer.value)).sum(),
+					from: aggregateTransfers
+						.filter(transfer => addressEquals(transfer.to, userAddress))
+						.map(transfer => transfer.from)
+						.toArray(),
+					amount: aggregateTransfers
+						.map(transfer =>
+							addressEquals(transfer.from, userAddress)
+								? -parseFloat(transfer.value)
+								: parseFloat(transfer.value)
+						)
+						.sum(),
 				}
 			})
+			.filter(aggregateTransfers => (aggregateTransfers.isNFT as boolean) || aggregateTransfers.amount > 0)
 			.toArray()
 	}
 }

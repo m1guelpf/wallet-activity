@@ -24,7 +24,12 @@ class OpenSeaBuy extends Inspector {
 		const transfersNFT = collect(parseTransferData(entry)).filter(transfer => transfer.isNFT)
 
 		if (transfersNFT.isEmpty()) {
-			const matchEvent = entry.insights.interactions[0].details.find(event => event.event === 'OrdersMatched')
+			const matchEvent = entry.insights.interactions?.[0]?.details?.find(event => event.event === 'OrdersMatched')
+
+			if (!matchEvent) {
+				const guessIsBuy = entry.value_in_eth != '0'
+				return { title: `${guessIsBuy ? 'Bought' : 'Sold'} an NFT on OpenSea` }
+			}
 
 			const isBuy = addressEquals(matchEvent?.maker as string, config.userAddress)
 

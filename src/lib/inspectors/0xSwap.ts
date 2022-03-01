@@ -6,6 +6,8 @@ import Inspector, { InspectorResult } from '../Inspector'
 
 const OX_EXCHANGE = '0xdef1c0ded9bec7f1a1670819833240f027b25eff'
 
+const IGNORED_TOKENS = ['Uniswap V2', 'SushiSwap LP Token']
+
 class OxSwap extends Inspector {
 	name = '0x Swap'
 
@@ -28,7 +30,7 @@ class OxSwap extends Inspector {
 
 	protected getSwapDetails(entry: ActivityEntry) {
 		// Swaps going thru Sushi contain an additional transfer that doesn't concern the user
-		const tokens = entry.insights.interactions.filter(contract => contract.contract != 'SushiSwap LP Token')
+		const tokens = entry.insights.interactions.filter(contract => !IGNORED_TOKENS.includes(contract.contract))
 		const tokenOut = tokens[0]
 		let tokenIn
 

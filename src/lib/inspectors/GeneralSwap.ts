@@ -41,10 +41,12 @@ class GeneralSwap extends Inspector {
 			transfer => !IGNORED_ADDRESSES.includes(transfer.to.toLowerCase())
 		)
 		const fromIndex = transfers.findIndex(transfer => addressEquals(transfer.from, userAddress))
+		const from = transfers?.[fromIndex]
+		const to = transfers.reverse()?.[fromIndex]
 
-		if (transfers.length != 2 || fromIndex === -1) return { from: null, to: null }
+		if (transfers.length != 2 || !addressEquals(to?.to, userAddress)) return { from: null, to: null }
 
-		return { from: transfers[fromIndex], to: transfers.reverse()[fromIndex] }
+		return { from, to }
 	}
 }
 
