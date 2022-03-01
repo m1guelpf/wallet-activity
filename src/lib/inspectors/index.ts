@@ -1,4 +1,5 @@
 export { default as NFTMint } from './NFTMint'
+export { default as Fallback } from './Fallback'
 export { default as ENSRenewal } from './ENSRenewal'
 export { default as TokensSent } from './TokensSent'
 export { default as OpenSeaBuy } from './OpenSeaBuy'

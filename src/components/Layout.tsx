@@ -1,13 +1,13 @@
 import { FC } from 'react'
 import Head from 'next/head'
-import coverImg from '@images/cover.png'
+import coverImg from '@images/cover.jpg'
 
 const Layout: FC = ({ children }) => {
 	const meta = {
-		url: 'http://wallet-activity.vercel.app',
-		title: 'Wallet History',
-		description: 'WIP.',
-		image: `http://wallet-activity.vercel.app${coverImg.src}`,
+		url: 'http://wallet.m1guelpf.me',
+		title: 'What if wallets understood your transactions?',
+		description: `It's notoriously hard for wallets to figure out what each transaction does, and they often fail to provide adequate context. Here's my attempt at it.`,
+		image: `http://wallet.m1guelpf.me${coverImg.src}`,
 	}
 
 	return (

@@ -53,7 +53,7 @@ const iOS = {
 		const time = useTime(1000) // refresh every second
 
 		return (
-			<header className="sticky top-0 inset-x-0 flex flex-row items-center justify-between z-20 bg-transparent backdrop-blur-sm -mx-2 px-2 pb-2 -mb-2">
+			<header className="sticky top-0 inset-x-0 flex flex-row items-center justify-between z-20 bg-transparent backdrop-blur-sm -mx-2 px-7 pb-2 -mb-2">
 				<div className={`flex flex-row items-center ml-1.5 w-36 mt-2`}>
 					<SwitchTransition mode="out-in">
 						<CSSTransition
@@ -90,7 +90,7 @@ const iOS = {
 		)
 	},
 	Notch: () => (
-		<div className="absolute hidden md:block top-0 left-1/2 h-9 w-52 md:w-72 bg-gray-900 rounded-b-3xl transform -translate-x-1/2 shadow-inner" />
+		<div className="absolute hidden md:block top-0 left-1/2 h-9 w-52 bg-gray-900 rounded-b-3xl transform -translate-x-1/2 shadow-inner" />
 	),
 	LockedTime: forwardRef(({}, ref: ForwardedRef<HTMLDivElement>) => {
 		const time = useTime(1000) // refresh every second
@@ -129,8 +129,8 @@ const iOS = {
 		)
 	}),
 	BottomBar: () => (
-		<footer className="sticky bottom-0 inset-x-0 z-30">
-			<div className="flex items-center justify-center space-x-2 mb-2.5">
+		<footer className="sticky bottom-2.5 inset-x-0 z-30">
+			<div className="flex items-center justify-center space-x-2">
 				<div className="w-1/3 h-1.5 bg-white rounded-full shadow" />
 			</div>
 		</footer>
@@ -142,7 +142,7 @@ const iOS = {
 
 		return (
 			<div
-				className={`absolute bottom-0.5 inset-x-0.5 bg-white py-5 px-7 text-black md:rounded-3xl z-40 space-y-8 ${className}`}
+				className={`absolute bottom-0.5 inset-x-0.5 bg-white py-5 px-7 text-black rounded-3xl z-40 space-y-8 ${className}`}
 			>
 				<div className="space-y-2">
 					<p className="text-center font-light text-3xl text-gray-600">Wallet History</p>
