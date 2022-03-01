@@ -6,13 +6,16 @@ import { formatUnits } from 'ethers/lib/utils'
 
 const WRAPPED_ETHER = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
 
+const SUPPORTED_METHODS = ['deposit', 'withdraw']
+
 class WrapEther extends Inspector {
 	name = 'Wrap Ether'
 
 	public check(entry: ActivityEntry): boolean {
 		return (
 			entry.insights.generalPurpose === TX_PURPOSE.CONTRACT_INTERACTION &&
-			addressEquals(entry.raw.to, WRAPPED_ETHER)
+			addressEquals(entry.raw.to, WRAPPED_ETHER) &&
+			SUPPORTED_METHODS.includes(entry.insights.method)
 		)
 	}
 
