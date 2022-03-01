@@ -1,4 +1,5 @@
 import a from 'indefinite'
+import { ethers } from 'ethers'
 import { ActivityEntry } from '../Activity'
 import { TX_PURPOSE } from '../insights/GeneralPurpose'
 import { addressEquals, parseTransferData } from '../utils'
@@ -21,7 +22,9 @@ class NFTMint extends Inspector {
 
 	resolve(entry: ActivityEntry): InspectorResult {
 		if (entry.insights.contractName === 'ENS') {
-			return { title: 'Registered an ENS name' }
+			const name = this.getENSName(entry.raw.input)
+
+			return { title: 'Registered an ENS name', description: name ? `You now own ${name}.eth` : '' }
 		}
 
 		return {
@@ -30,6 +33,10 @@ class NFTMint extends Inspector {
 				entry.value_in_eth != '0' ? ` for ${parseFloat(entry.value_in_eth).toFixed(2)} ETH` : ''
 			}`,
 		}
+	}
+
+	protected getENSName(data: string): string | null {
+		return ethers.utils.defaultAbiCoder.decode(['string'], ethers.utils.hexDataSlice(data, 4))?.[0]
 	}
 }
 
