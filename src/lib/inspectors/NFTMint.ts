@@ -27,7 +27,7 @@ class NFTMint extends Inspector {
 		return {
 			title: 'Minted an NFT',
 			description: `Minted ${entry.insights.contractName ? a(entry.insights.contractName) : 'an'} NFT${
-				entry.value_in_eth != '0' ? `for ${parseFloat(entry.value_in_eth).toFixed(2)}` : ''
+				entry.value_in_eth != '0' ? ` for ${parseFloat(entry.value_in_eth).toFixed(2)} ETH` : ''
 			}`,
 		}
 	}
