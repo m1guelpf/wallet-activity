@@ -5,3 +5,13 @@
 * {
     @apply !select-none;
 }
+
+body {
+    height: 100vh;
+  }
+
+  @supports (-webkit-touch-callout: none) {
+    body {
+      height: -webkit-fill-available;
+    }
+  }

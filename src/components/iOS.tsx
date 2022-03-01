@@ -163,17 +163,19 @@ const iOS = {
 							<span className="">Connecting</span>
 						</div>
 					) : (
-						data.connectors.map(connector => (
-							<button
-								key={connector.id}
-								onClick={() => connect(connector)}
-								className={`py-3 w-full bg-gray-300 text-black font-medium rounded-xl transition hover:opacity-80 ${
-									loading ? 'invisible' : ''
-								}`}
-							>
-								{connector.name}
-							</button>
-						))
+						data.connectors
+							.filter(connector => connector.ready)
+							.map(connector => (
+								<button
+									key={connector.id}
+									onClick={() => connect(connector)}
+									className={`py-3 w-full bg-gray-300 text-black font-medium rounded-xl transition hover:opacity-80 ${
+										loading ? 'invisible' : ''
+									}`}
+								>
+									{connector.name}
+								</button>
+							))
 					)}
 				</div>
 			</div>
