@@ -3,7 +3,7 @@ import { ActivityEntry } from '../Activity'
 import { TransferEvent } from '@/types/utils'
 import collect, { Collection } from 'collect.js'
 import { TX_PURPOSE } from '../insights/GeneralPurpose'
-import { addressEquals, parseTransferData } from '../utils'
+import { addressEquals, correctContractName, parseTransferData } from '../utils'
 import Inspector, { Config, InspectorResult } from '../Inspector'
 import { formatUnits } from 'ethers/lib/utils'
 
@@ -49,8 +49,8 @@ class OpenSeaBuy extends Inspector {
 			.map((transfers: Collection<TransferEvent>): string => {
 				const oneOf = transfers.random()
 
-				if (transfers.count() > 1) return a(`${transfers.count()} ${oneOf.contract.name}`)
-				return a(oneOf.contract.name)
+				if (transfers.count() > 1) return a(`${transfers.count()} ${correctContractName(oneOf.contract.name)}`)
+				return a(correctContractName(oneOf.contract.name))
 			})
 			.toArray()
 
