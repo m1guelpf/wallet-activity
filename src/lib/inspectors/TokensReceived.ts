@@ -27,11 +27,17 @@ class TokensReceived extends Inspector {
 		const received = this.aggregateReceived(entry, config.userAddress)
 
 		if (received.length == 1 && received[0].isNFT) {
+			const isMint = addressEquals(received[0].from?.[0], ZERO_ADDRESS)
+
 			return {
-				title: `Received ${entry.insights.contractName ? a(entry.insights.contractName) : 'an'} NFT`,
-				description: `${formatAddressShort(
-					entry.insights?.fromENS || received[0].from?.[0] || entry.raw.from
-				)} sent you an NFT`,
+				title: `${isMint ? 'Minted' : 'Received'} ${
+					entry.insights.contractName ? a(entry.insights.contractName) : 'an'
+				} NFT`,
+				description: isMint
+					? ''
+					: `${formatAddressShort(
+							entry.insights?.fromENS || received[0].from?.[0] || entry.raw.from
+					  )} sent you an NFT`,
 			}
 		}
 
