@@ -1,7 +1,8 @@
 import axios from 'axios'
-import Insight from '@/lib/Insight'
 import Augmenter from '@/lib/Augmenter'
+import * as Sentry from '@sentry/nextjs'
 import { TxData } from '@/types/covalent'
+import Insight, { InsightWarning } from '@/lib/Insight'
 
 export enum TX_PURPOSE {
 	ETH_TRANSFER = 'eth_transfer',
@@ -18,22 +19,22 @@ class GeneralPurpose extends Insight {
 		if (tx.data == '0x') return { generalPurpose: TX_PURPOSE.ETH_TRANSFER }
 
 		return {
-			method: await this.getMethod(tx.data),
+			method: await this.getMethod(tx),
 			generalPurpose: TX_PURPOSE.CONTRACT_INTERACTION,
 		}
 	}
 
-	protected async getMethod(txData: string): Promise<string | null> {
-		const fnSig = txData.slice(0, 10)
-		if (this.#fnSigCache[fnSig]) return this.#fnSigCache[fnSig]
+	protected async getMethod(tx: TxData): Promise<string | null> {
+		const hex_signature = tx.data.slice(0, 10)
+		if (this.#fnSigCache[hex_signature]) return this.#fnSigCache[hex_signature]
 
 		const method = await axios
-			.get('https://www.4byte.directory/api/v1/signatures', {
-				params: { hex_signature: txData.slice(0, 10) },
-			})
+			.get('https://www.4byte.directory/api/v1/signatures', { params: { hex_signature } })
 			.then(({ data: { results } }) => results[results.length - 1]?.text_signature?.split('(')?.[0])
 
-		this.#fnSigCache[fnSig] = method
+		if (!method) Sentry.captureException(new InsightWarning(this, tx, `Method for [${hex_signature}] not found`))
+
+		this.#fnSigCache[hex_signature] = method
 
 		return method
 	}

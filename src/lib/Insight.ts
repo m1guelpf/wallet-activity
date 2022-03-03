@@ -16,6 +16,19 @@ export class InsightFailed extends Error {
 	}
 }
 
+export class InsightWarning extends Error {
+	public tx: TxData
+	public insight: Insight
+	public errors?: Error[]
+
+	constructor(insight: Insight, tx: TxData, message: string) {
+		super(`Warning on ${insight.name}: ${message} (tx: ${tx.tx_hash})`)
+
+		this.insight = insight
+		this.tx = tx
+	}
+}
+
 abstract class Insight {
 	name: string
 
