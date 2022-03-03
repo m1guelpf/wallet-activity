@@ -11,19 +11,19 @@ class TokensSent extends Inspector {
 		return (
 			entry.insights.generalPurpose === TX_PURPOSE.CONTRACT_INTERACTION &&
 			addressEquals(entry.raw.from, config.userAddress) &&
-			entry.insights.method?.toLowerCase()?.includes('transfer')
+			parseTransferData(entry).filter(transfer => addressEquals(transfer.from, config.userAddress)).length > 0
 		)
 	}
 
-	resolve(entry: ActivityEntry): InspectorResult {
-		const transfers = parseTransferData(entry)
+	resolve(entry: ActivityEntry, config: Config): InspectorResult {
+		const transfers = parseTransferData(entry).filter(transfer => addressEquals(transfer.from, config.userAddress))
 
 		if (transfers.length > 1) {
 			return {
-				title: `Sent ${transfers.length} NFTs`,
-				description: `Sent ${transfers.map(transfer => a(transfer.contract.name)).join(', ')} to ${transfers
-					.map(transfer => formatAddressShort(transfer.to))
-					.join(', ')}`,
+				title: `Sent ${transfers.length} ${transfers.every(transfer => transfer.isNFT) ? 'NFTs' : 'tokens'}`,
+				description: `Sent ${transfers
+					.map(transfer => (transfer.isNFT ? a(transfer.contract.name) : transfer.contract.name))
+					.join(', ')} to ${transfers.map(transfer => formatAddressShort(transfer.to)).join(', ')}`,
 			}
 		}
 
