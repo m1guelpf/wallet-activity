@@ -40,7 +40,7 @@ class GeneralSwap extends Inspector {
 		userAddress: string
 	): { from: TransferEvent | null; to: TransferEvent | null } {
 		const transfers = parseTransferData(entry).filter(
-			transfer => !IGNORED_ADDRESSES.includes(transfer.to.toLowerCase())
+			transfer => !IGNORED_ADDRESSES.includes(transfer.to?.toLowerCase())
 		)
 		const fromIndex = transfers.findIndex(transfer => addressEquals(transfer.from, userAddress))
 		const from = transfers?.[fromIndex]
