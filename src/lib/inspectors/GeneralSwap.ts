@@ -1,3 +1,4 @@
+import a from 'indefinite'
 import millify from 'millify'
 import { ActivityEntry } from '../Activity'
 import { TransferEvent } from '@/types/utils'
@@ -27,9 +28,10 @@ class GeneralSwap extends Inspector {
 		const { from, to } = this.getSwapDetails(entry, config.userAddress)
 
 		return {
-			title: `Swapped ${millify(parseFloat(from.value))} $${from.contract.symbol} for ${millify(
-				parseFloat(to.value)
-			)} $${to.contract.symbol}`,
+			title: from.isNFT && to.isNFT ? 'NFT Swap' : 'Token Swap',
+			description: `Swapped ${
+				from.isNFT ? a(from.contract.name) : `${millify(parseFloat(from.value))} $${from.contract.symbol}`
+			} for ${to.isNFT ? a(to.contract.name) : `${millify(parseFloat(to.value))} $${to.contract.symbol}`}`,
 		}
 	}
 
