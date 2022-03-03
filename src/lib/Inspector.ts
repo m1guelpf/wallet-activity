@@ -22,7 +22,7 @@ export class InspectorError extends Error {
 
 		if (error) this.stack = error.stack
 
-		logger.debug('error!!!', inspector.name, entry)
+		logger.debug('error!!!', inspector.name, entry, error)
 	}
 }
 

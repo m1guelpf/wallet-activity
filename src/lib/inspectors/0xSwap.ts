@@ -1,6 +1,7 @@
 import millify from 'millify'
 import { addressEquals } from '../utils'
 import { ActivityEntry } from '../Activity'
+import { formatUnits } from 'ethers/lib/utils'
 import { TX_PURPOSE } from '../insights/GeneralPurpose'
 import Inspector, { InspectorResult } from '../Inspector'
 
@@ -37,6 +38,11 @@ class OxSwap extends Inspector {
 		if (entry.raw.value !== '0') tokenIn = { contract: 'ETH', ticker: 'ETH', amount: entry.value_in_eth }
 		else tokenIn = tokens[tokens.length - 1]
 
+		const outAmount =
+			tokenOut.contract_symbol == 'WETH'
+				? formatUnits(tokenOut.details?.find(event => event.event == 'Withdrawal')?.wad as number)
+				: tokenOut.details?.find(event => event.event == 'Transfer')?.value
+
 		return {
 			in: {
 				name: tokenIn.contract,
@@ -46,7 +52,7 @@ class OxSwap extends Inspector {
 			out: {
 				name: tokenOut.contract,
 				ticker: tokenOut.contract_symbol,
-				amount: tokenOut.details?.find(event => event.event == 'Transfer')?.value,
+				amount: outAmount,
 			},
 		}
 	}

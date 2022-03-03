@@ -1,4 +1,5 @@
 import a from 'indefinite'
+import millify from 'millify'
 import { ActivityEntry } from '../Activity'
 import { TX_PURPOSE } from '../insights/GeneralPurpose'
 import Inspector, { Config, InspectorResult } from '../Inspector'
@@ -37,7 +38,7 @@ class TokensSent extends Inspector {
 		}
 
 		return {
-			title: `Sent ${transfers[0].value} $${transfers[0].contract.symbol}`,
+			title: `Sent ${millify(parseFloat(transfers[0].value))} $${transfers[0].contract.symbol}`,
 			description: `Sent ${transfers[0].contract.name} to ${formatAddressShort(transfers[0].to)}`,
 		}
 	}

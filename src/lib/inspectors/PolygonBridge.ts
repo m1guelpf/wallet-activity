@@ -13,11 +13,13 @@ class PolygonBridge extends Inspector {
 			entry.insights.generalPurpose === TX_PURPOSE.CONTRACT_INTERACTION &&
 			addressEquals(entry.raw.from, config.userAddress) &&
 			addressEquals(entry.raw.to, POLYGON_BRIDGE) &&
-			entry.insights.method === 'depositEtherFor'
+			['depositEtherFor', 'exit'].includes(entry.insights.method)
 		)
 	}
 
 	resolve(entry: ActivityEntry): InspectorResult {
+		if (entry.insights.method === 'exit') return { title: 'Bridged back from Polygon' }
+
 		return {
 			title: `Bridged ${parseFloat(entry.value_in_eth).toFixed(2)} ETH to Polygon`,
 		}
