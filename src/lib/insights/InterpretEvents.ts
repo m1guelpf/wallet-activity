@@ -51,7 +51,7 @@ class InterpretEvents extends Insight {
 						contract: event.sender_name,
 						contract_symbol: event.sender_contract_ticker_symbol,
 						contract_address: event.sender_address,
-						name: event.decoded.name,
+						name: event.decoded?.name,
 						details,
 					},
 				]
