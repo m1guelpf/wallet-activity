@@ -56,7 +56,7 @@ export const parseTransferData = (entry: ActivityEntry): TransferEvent[] => {
 		entry.insights.interactions
 			?.map(contract =>
 				contract.details
-					.filter(event => event.event.toLowerCase().includes('transfer'))
+					.filter(event => event.event?.toLowerCase()?.includes('transfer'))
 					.map(event => ({
 						contract: {
 							name: contract.contract,
