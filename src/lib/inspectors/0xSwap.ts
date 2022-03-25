@@ -39,7 +39,7 @@ class OxSwap extends Inspector {
 		else tokenIn = tokens[tokens.length - 1]
 
 		const outAmount =
-			tokenOut.contract_symbol == 'WETH'
+			tokenOut.contract_symbol == 'WETH' && tokenOut.details?.some(event => event.event == 'Withdrawal')
 				? formatUnits(tokenOut.details?.find(event => event.event == 'Withdrawal')?.wad as number)
 				: tokenOut.details?.find(event => event.event == 'Transfer')?.value
 
