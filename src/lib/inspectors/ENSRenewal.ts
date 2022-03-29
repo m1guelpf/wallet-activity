@@ -31,7 +31,7 @@ class ENSRenewal extends Inspector {
 		const [name, duration] = ethers.utils.defaultAbiCoder.decode(
 			['string', 'uint256'],
 			ethers.utils.hexDataSlice(entry.raw.input, 4)
-		)?.[0]
+		)
 
 		return { name: `${name}.eth`, duration: Math.floor(duration / 3600 / 24 / 360) }
 	}
