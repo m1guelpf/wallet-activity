@@ -1,3 +1,4 @@
+import { ethers } from 'ethers'
 import { ActivityEntry } from '../Activity'
 import { TX_PURPOSE } from '../insights/GeneralPurpose'
 import { Interaction } from '../insights/InterpretEvents'
@@ -20,8 +21,19 @@ class ENSRenewal extends Inspector {
 		return ensContract.details.some(event => event.event === 'NameRenewed')
 	}
 
-	resolve(): InspectorResult {
-		return { title: 'Renewed ENS Domain' }
+	resolve(entry: ActivityEntry): InspectorResult {
+		const { name, duration } = this.getRenewalDetails(entry)
+
+		return { title: 'Renewed ENS Domain', description: `Renewed ${name} for ${duration} years.` }
+	}
+
+	getRenewalDetails(entry: ActivityEntry): { name: string; duration: number } {
+		const [name, duration] = ethers.utils.defaultAbiCoder.decode(
+			['string', 'uint256'],
+			ethers.utils.hexDataSlice(entry.raw.input, 4)
+		)?.[0]
+
+		return { name: `${name}.eth`, duration: Math.floor(duration / 3600 / 24 / 360) }
 	}
 }
 
