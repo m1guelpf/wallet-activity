@@ -4,6 +4,7 @@ import {
 	WrapEther,
 	ENSRenewal,
 	TokensSent,
+	SeaportBuy,
 	OpenSeaBuy,
 	GnosisCall,
 	GeneralSwap,
@@ -47,6 +48,7 @@ const INSPECTORS: Array<Inspector> = [
 	new PolygonBridge(),
 	new ENSReverseRecord(),
 	new OpenSeaBuy(),
+	new SeaportBuy(),
 
 	/* Sent Transactions */
 	new NFTMint(),
