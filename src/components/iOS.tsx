@@ -75,7 +75,7 @@ const iOS = {
 									<span>{('0' + time.getMinutes()).slice(-2)}</span>
 								</p>
 							) : (
-								<p className="text-sm">Kintsugi</p>
+								<p className="text-sm">Ethereum</p>
 							)}
 						</CSSTransition>
 					</SwitchTransition>
@@ -142,11 +142,11 @@ const iOS = {
 
 		return (
 			<div
-				className={`absolute bottom-0.5 inset-x-0.5 bg-white py-5 px-7 text-black rounded-3xl z-40 space-y-8 ${className}`}
+				className={`absolute bottom-0.5 inset-x-0.5 bg-black py-5 px-7 text-white rounded-3xl z-40 space-y-8 ${className}`}
 			>
 				<div className="space-y-2">
-					<p className="text-center font-light text-3xl text-gray-600">Wallet History</p>
-					<p className="text-center text-gray-600">Your transaction history, explained</p>
+					<p className="text-center font-light text-3xl text-gray-200">Wallet History</p>
+					<p className="text-center text-gray-400">Your transaction history, explained</p>
 				</div>
 				<div className="flex justify-center">
 					{/* eslint-disable-next-line @next/next/no-img-element */}
@@ -158,7 +158,7 @@ const iOS = {
 				</div>
 				<div className={`space-x-2 flex items-center ${isLoading ? 'justify-center' : 'justify-between'}`}>
 					{isLoading ? (
-						<div className="flex items-center justify-center space-x-1.5">
+						<div className="flex items-center justify-center space-x-1.5 text-gray-400">
 							<SpinnerIcon className="w-4 h-4" />
 							<span className="">Connecting</span>
 						</div>
@@ -169,7 +169,7 @@ const iOS = {
 								<button
 									key={connector.id}
 									onClick={() => connect(connector)}
-									className={`py-3 w-full bg-gray-300 text-black font-medium rounded-xl transition hover:opacity-80 ${
+									className={`py-3 w-full bg-white/10 hover:bg-white/20 text-gray-300 font-medium rounded-xl transition ${
 										loading ? 'invisible' : ''
 									}`}
 								>

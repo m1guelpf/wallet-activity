@@ -11,7 +11,7 @@ const SpinnerIcon: FC<{ className?: string }> = ({ className = '' }) => (
 		strokeLinecap="round"
 		xmlSpace="preserve"
 	>
-		<g strokeWidth="200" strokeLinecap="round" stroke="#000" fill="none">
+		<g strokeWidth="200" strokeLinecap="round">
 			<path d="M1200 600V100" />
 			<path opacity=".5" d="M1200 2300v-500" />
 			<path opacity=".917" d="m900 680.4-250-433" />
