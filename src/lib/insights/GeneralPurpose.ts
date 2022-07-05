@@ -29,8 +29,16 @@ class GeneralPurpose extends Insight {
 		if (this.#fnSigCache[hex_signature]) return this.#fnSigCache[hex_signature]
 
 		const method = await axios
-			.get('https://www.4byte.directory/api/v1/signatures', { params: { hex_signature } })
-			.then(({ data: { results } }) => results[results.length - 1]?.text_signature?.split('(')?.[0])
+			.get('https://sig.eth.samczsun.com/api/v1/signatures', { params: { function: hex_signature } })
+			.then(
+				({
+					data: {
+						result: {
+							function: { [hex_signature]: result },
+						},
+					},
+				}) => result[result.length - 1]?.name?.split('(')?.[0]
+			)
 
 		if (!method) Sentry.captureException(new InsightWarning(this, tx, `Method for [${hex_signature}] not found`))
 
