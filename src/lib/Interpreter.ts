@@ -15,6 +15,7 @@ import {
 	LooksRareSale,
 	TokenApproval,
 	OpenSeaCancel,
+	FoundationBid,
 	PolygonBridge,
 	TokensReceived,
 	ContractDeploy,
@@ -49,6 +50,7 @@ const INSPECTORS: Array<Inspector> = [
 	new ENSReverseRecord(),
 	new OpenSeaBuy(),
 	new SeaportBuy(),
+	new FoundationBid(),
 
 	/* Sent Transactions */
 	new NFTMint(),
