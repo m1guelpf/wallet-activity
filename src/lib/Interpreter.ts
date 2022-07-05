@@ -10,6 +10,7 @@ import {
 	GeneralSwap,
 	ETHTransfer,
 	AaveDeposit,
+	GnosisCreate,
 	MintReceived,
 	UniswapV2Swap,
 	LooksRareSale,
@@ -23,7 +24,7 @@ import {
 	ENSReverseRecord,
 	FailedTransaction,
 	JuiceboxContribution,
-	GnosisCreate,
+	LilNounsBid,
 } from './inspectors'
 import OxSwap from './inspectors/0xSwap'
 import { ActivityEntry } from './Activity'
@@ -50,6 +51,7 @@ const INSPECTORS: Array<Inspector> = [
 	new ENSReverseRecord(),
 	new OpenSeaBuy(),
 	new SeaportBuy(),
+	new LilNounsBid(),
 	new FoundationBid(),
 
 	/* Sent Transactions */
