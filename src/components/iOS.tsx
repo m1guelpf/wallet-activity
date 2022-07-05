@@ -32,10 +32,12 @@ const iOS = {
 		return (
 			<div className="flex items-center justify-center md:h-screen w-screen md:py-4 antialiased text-white bg-gray-900 to-black">
 				<div
-					className="md:max-w-md bg-cover md:rounded-3xl transform scale-100 h-full md:h-auto md:max-h-4xl relative overflow-auto w-full"
-					style={{
-						backgroundImage: `linear-gradient(rgba(0, 0, 0, .1) 0%, rgba(0, 0,  0, .1) 100%), url('${iOSbg.src}')`,
-					}}
+					className="w-screen h-screen fixed inset-0 bg-cover md:hidden z-10"
+					style={{ backgroundImage: `url('${iOSbg.src}')` }}
+				/>
+				<div
+					className="md:max-w-md bg-cover md:rounded-3xl transform scale-100 h-full md:h-auto md:max-h-4xl relative overflow-auto w-full z-20 md:bg-var"
+					style={{ '--bg-image': `url(${iOSbg.src})` } as unknown}
 				>
 					<div className="flex flex-col px-2 min-h-3xl h-full md:h-3xl">
 						<iOS.TopBar isStandalone={isStandalone} showTime={!timeVisible} />

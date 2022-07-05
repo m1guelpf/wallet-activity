@@ -16,7 +16,7 @@ module.exports = {
 				'3xl': '48rem',
 			},
 			backgroundImage: {
-				ios: "linear-gradient(rgba(0, 0, 0, .1) 0%, rgba(0, 0,  0, .1) 100%), url('https://i.imgur.com/H5lPJLP.jpg')",
+				var: 'var(--bg-image)',
 			},
 			keyframes: {
 				reveal: {
